@@ -1282,7 +1282,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <!--/radix_placeholder_distill-->
-  <script src="../../site_libs/header-attrs-2.1/header-attrs.js"></script>
   <script src="../../site_libs/jquery-1.11.3/jquery.min.js"></script>
   <script src="../../site_libs/bowser-1.9.3/bowser.min.js"></script>
   <script src="../../site_libs/webcomponents-2.0.0/webcomponents.js"></script>
@@ -1339,19 +1338,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <div class="d-article">
 <h2 id="intro">Intro</h2>
-<p>This is the second part in a serial of tutorials. The other parts of this series can be found here:</p>
+<p>This is the second part of a serial of tutorials. The other parts of this series can be found here:</p>
 <ul>
 <li><a href="/basics_german_credit/">Part I - Basics</a></li>
 <li><a href="/basics_pipelines_german_credit/">Part III - Pipelines</a></li>
 </ul>
-<p>In this case we will continue working with the <strong>German Credit Dataset</strong>. Yesterday we peeked into the data set by using and comparing some learners with ther default parameters. We will now see how to:</p>
+<p>In this case, we will continue working with the <strong>German Credit Dataset</strong>. Yesterday we peeked into the data set by using and comparing some learners with their default parameters. We will now see how to:</p>
 <ul>
 <li>Tune hyperparameters for a given problem</li>
 <li>Perform nested resampling</li>
 <li>Adjust decision thresholds</li>
 </ul>
 <h2 id="prerequisites">Prerequisites</h2>
-<p>We expect you have installed all packages from day 1. If not, load the day 1 script and run the <strong>Prerequisites</strong> install chunk.</p>
+<p>We expect you have installed all packages from day 1. If not, load the day 1 (basics) script and run the <strong>Prerequisites</strong> install chunk.</p>
 <p>Load the packages we are going to use:</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
@@ -1396,29 +1395,21 @@ cv10_instance$instance</code></pre>
 1000:    994   10</code></pre>
 </div>
 <h2 id="simple-parameter-tuning">Simple Parameter Tuning</h2>
-<ul>
-<li>Use the <code>paradox</code> package for search space definition of the hyperparameters</li>
-<li>Use the <code>mlr3tuning</code> package for tuning the hyperparameters</li>
-</ul>
+<p>Parameter tuning in <code>mlr3</code> needs two packages: The <code>paradox</code> package is used for the search space definition of the hyperparameters. The <code>mlr3tuning</code> package is used for tuning the hyperparameters.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 library(&quot;mlr3tuning&quot;)
 library(&quot;paradox&quot;)</code></pre>
 </div>
 <h3 id="search-space-and-problem-definition">Search Space and Problem Definition</h3>
-<ul>
-<li>First need to decide what <code>Learner</code> to optimize. We will use <code>"classif.kknn"</code>, the “kernelized” k-nearest neighbor classifier. <!-- - (We could also try to optimize multiple `Learner`s simultaneously, i.e. choose the `Learner` to use automatically. Look into mlr3pipelines if you want to do that. --></li>
-<li>We will use <code>kknn</code> as a normal kNN without weighting first (i.e., use the <code>rectangular</code> kernel):</li>
-</ul>
+<p>First, we need to decide what <code>Learner</code> we want to optimize. We will use <code>"classif.kknn"</code>, the “kernelized” k-nearest neighbor classifier. We will use <code>kknn</code> as a normal kNN without weighting first (i.e., use the <code>rectangular</code> kernel):</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 knn = lrn(&quot;classif.kknn&quot;, predict_type = &quot;prob&quot;)
 ## use rectangular kernel for normal kNN
 knn$param_set$values$kernel = &quot;rectangular&quot;</code></pre>
 </div>
-<ul>
-<li>Then we decide what parameters we optimize over. What are our options?</li>
-</ul>
+<p>As a next step, we decide what parameters we optimize over. Before that, though, we are interested in the parameter set on which we could tune.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 knn$param_set</code></pre>
@@ -1443,9 +1434,7 @@ ParamSet:
 4:            
 5:            </code></pre>
 </div>
-<ul>
-<li>We first tune the <code>k</code> parameter from 3 to 20 and the <code>distance</code> function (either L1 or L2). To do so, we use the <code>paradox</code> package to define a search space (see <a href="#very-quick-paradox-primer">Appendix</a> for a short list of possible parameter types).</li>
-</ul>
+<p>We first tune the <code>k</code> parameter (i.e. the number of neighbors to be accounted for). A range from 3 to 20 seems reasonable for this. Second, we aim to tune the <code>distance</code> function. We aim to keep it simple and only tune over the L1 and L2 distance. To do so, we use the <code>paradox</code> package to define a search space (see <a href="#very-quick-paradox-primer">Appendix</a> for a short list of possible parameter types).</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 searchspace = ParamSet$new(list(
@@ -1453,17 +1442,8 @@ searchspace = ParamSet$new(list(
   ParamInt$new(&quot;distance&quot;, lower = 1, upper = 2)
 ))</code></pre>
 </div>
-<ul>
-<li>We define a “tuning instance” that represents the problem we are trying to optimize.
-<ul>
-<li>What is the task we are optimizing for?</li>
-<li>What learner are we using?</li>
-<li>How do we do resampling?</li>
-<li>What is the performance measure?</li>
-<li>What is the search space (“parameter set”)?</li>
-<li>When are we done searching? (Disregard this for now).</li>
-</ul></li>
-</ul>
+<p>As a next step, we define a “tuning instance” that represents the problem we are trying to optimize.</p>
+<p>Typically a tuning instance needs to be supplied with: - The task we are optimizing for. - The learner are we using. - The resampling we use. - The performance measure to be optimized. - The search space (“parameter set”). - The end of tuning (“terminator”) (ignore this for now).</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 instance_grid = TuningInstance$new(
@@ -1476,22 +1456,13 @@ instance_grid = TuningInstance$new(
 )</code></pre>
 </div>
 <h3 id="grid-search">Grid Search</h3>
-<ul>
-<li>A simple tuning method is to try all possible combinations of parameters: <strong>Grid Search</strong>
-<ul>
-<li>Pro: Very intuitive and simple</li>
-<li>Con: Inefficient if the search space is large</li>
-</ul></li>
-<li>We get the <code>"grid_search"</code> tuner for this</li>
-</ul>
+<p>After having set up a tuning instance, we can start tuning. Before that, we need a tuning strategy, though. A simple tuning method is to try all possible combinations of parameters: <strong>Grid Search</strong> While it is very intuitive and simple, it is inefficient if the search space is large. For this simple use case, it suffices, though. We get the <code>"grid_search"</code> tuner by:</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 set.seed(1)
 tuner_grid = tnr(&quot;grid_search&quot;, resolution = 18, batch_size = 36)</code></pre>
 </div>
-<ul>
-<li>Tuning works by calling <code>$tune()</code>. Note that it <em>modifies</em> our “tuning instance”–the result can be found in the <code>instance</code> object.</li>
-</ul>
+<p>Tuning works by calling <code>$tune()</code>. Note that the tuning procedure <em>modifies</em> our “tuning instance” (As usual for <code>R6</code> class objects). The result can be found in the <code>instance</code> object. Before tuning it is empty:</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 ## empty instance object:
@@ -1511,9 +1482,7 @@ NULL</code></pre>
 ## now run tuning:
 tuner_grid$tune(instance_grid)</code></pre>
 </div>
-<ul>
-<li>The result can be found in the <code>$result</code> slot. We can also plot the performance.</li>
-</ul>
+<p>The result of tuning can now be found in the <code>$result</code> slot – together with its performance.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 instance_grid$result</code></pre>
@@ -1541,10 +1510,7 @@ $perf
 classif.ce 
      0.249 </code></pre>
 </div>
-<ul>
-<li>We can look at the “archive” of evaluated configurations</li>
-<li>We expand the “params” (the parameters that the <code>Learner</code> actually saw)</li>
-</ul>
+<p>We can also look at the “archive” of evaluated configurations. We do so by expanding the “params” (the parameters that the <code>Learner</code> actually saw).</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 perfdata = instance_grid$archive(&quot;params&quot;)
@@ -1595,20 +1561,11 @@ ggplot(perfdata, aes(x = k, y = classif.ce, color = as.factor(distance))) +
   geom_line() + geom_point(size = 3)</code></pre>
 <p><img src="2020-03-11-mlr3tuning_tutorial_german_credit_files/figure-html5/unnamed-chunk-16-1.png" width="624" /></p>
 </div>
-<ul>
-<li>Euclidean distance (<code>distance</code> = 2) seems to work better, but there is much randomness introduced by the resampling instance, so you may see a different result!</li>
-<li><code>k</code> between 10 and 15 perform well</li>
-</ul>
+<p>On average, the Euclidean distance (<code>distance</code> = 2) seems to work better. However, there is much randomness introduced by the resampling instance. So you, the reader, may see a different result, when you run the experiment yourself. For <code>k</code>, we find that values between 10 and 15 perform well.</p>
 <h3 id="random-search-and-transformation">Random Search and Transformation</h3>
-<ul>
-<li>Let’s look at a larger search space. In fact, how about we tune <em>all</em> available parameters and limit <code>k</code> to large values (50).</li>
-<li><strong>Problem 1</strong>: The difference in performance between <code>k</code> = 3 and <code>k</code> = 4 is probably larger than the difference between <code>k</code> = 49 and <code>k</code> = 50.
-<ul>
-<li>We will use a <strong>transformation function</strong> for <code>k</code> and sample values on the log-space.</li>
-<li>To do so, we define the range for <code>k</code> from <code>log(3)</code> to <code>log(50)</code> and exponentiate in the transformation.</li>
-<li>For <code>k</code>, we must use <code>ParamDbl</code> instead of <code>ParamInt</code> now!</li>
-</ul></li>
-</ul>
+<p>Let’s have a look at a larger search space. For example, we could tune <em>all</em> available parameters and limit <code>k</code> to large values (50).</p>
+<p>We may find 2 problems when doing so:</p>
+<p>First, the resulting difference in performance between <code>k</code> = 3 and <code>k</code> = 4 is probably larger than the difference between <code>k</code> = 49 and <code>k</code> = 50. While 4 is 33% larger than 3, 50 is only 2 percent larger than 49. To account for this we will use a <strong>transformation function</strong> for <code>k</code> and sample values on the log-space. We define the range for <code>k</code> from <code>log(3)</code> to <code>log(50)</code> and exponentiate in the transformation. Now, <code>k</code> is not necessarily an integer anymore. So, we must use <code>ParamDbl</code> instead of <code>ParamInt</code>.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 large_searchspace = ParamSet$new(list(
@@ -1623,14 +1580,7 @@ large_searchspace$trafo = function(x, param_set) {
   x
 }</code></pre>
 </div>
-<ul>
-<li><strong>Problem 2</strong>: Using grid search will take a long time.
-<ul>
-<li>Even trying out three different values for <code>k</code>, <code>distance</code>, <code>kernel</code>, and the two values for <code>scale</code> will take 54 evaluations.</li>
-<li>We use a different search algorithm: <strong>Random Search</strong></li>
-<li>The <em>tuning instance</em> must now contain a <em>termination criterion</em>: When do we stop?</li>
-</ul></li>
-</ul>
+<p>The second problem is that grid search may (and often will) take a long time. For instance, trying out three different values for <code>k</code>, <code>distance</code>, <code>kernel</code>, and the two values for <code>scale</code> will take 54 evaluations. Because of this, we use a different search algorithm, namely the <strong>Random Search</strong>. We need to specify in the <em>tuning instance</em> a <em>termination criterion</em>. The criterion tells the search algorithm when to stop.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 tuner_random = tnr(&quot;random_search&quot;, batch_size = 36)
@@ -1681,9 +1631,7 @@ $perf
 classif.ce 
      0.252 </code></pre>
 </div>
-<ul>
-<li>We can get the “archive” in two ways: expand the <code>"tune_x"</code> parameters (the points we sampled on the search space, before transformation):</li>
-</ul>
+<p>Like before, we can review the “archive”. We can do so in two ways- First, we can expand the <code>"tune_x"</code> parameters (the points we sampled on the search space, before transformation):</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 perfdata = instance_random$archive(&quot;tune_x&quot;)
@@ -1728,9 +1676,7 @@ perfdata[, c(&quot;k&quot;, &quot;distance&quot;, &quot;kernel&quot;, &quot;scal
 36: 1.712136 2.865938        rank  TRUE      0.265
            k distance      kernel scale classif.ce</code></pre>
 </div>
-<ul>
-<li>Or look at the <code>"params"</code> parameters (the points the <code>Learner</code> was used with—these are the <code>exp()</code>’d parameters, after transformation of the sampled points):</li>
-</ul>
+<p>Second, we can look at the <code>"params"</code> parameters (the points the <code>Learner</code> was used with—these are the <code>exp()</code>’d parameters, after transformation of the sampled points):</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 perfdata = instance_random$archive(&quot;params&quot;)
@@ -1775,16 +1721,14 @@ perfdata[, c(&quot;k&quot;, &quot;distance&quot;, &quot;kernel&quot;, &quot;scal
 36:  6 2.865938        rank  TRUE      0.265
      k distance      kernel scale classif.ce</code></pre>
 </div>
-<p>Let’s look at some plots of performance by parameter. - The following suggests that <code>scale</code> has a strong influence on performance.</p>
+<p>Let’s now look to investigate the performance by parameters. This is especially easy using visualization.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 ggplot(perfdata, aes(x = k, y = classif.ce, color = scale)) +
   geom_point(size = 3) + geom_line()</code></pre>
 <p><img src="2020-03-11-mlr3tuning_tutorial_german_credit_files/figure-html5/unnamed-chunk-22-1.png" width="624" /></p>
 </div>
-<ul>
-<li>As for the kernel, there does not seem to be a strong influence:</li>
-</ul>
+<p>The previous plot suggests that <code>scale</code> has a strong influence on performance. For the kernel, there does not seem to be a strong influence:</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 ggplot(perfdata, aes(x = k, y = classif.ce, color = kernel)) +
@@ -1792,7 +1736,7 @@ ggplot(perfdata, aes(x = k, y = classif.ce, color = kernel)) +
 <p><img src="2020-03-11-mlr3tuning_tutorial_german_credit_files/figure-html5/unnamed-chunk-23-1.png" width="624" /></p>
 </div>
 <h2 id="nested-resampling">Nested Resampling</h2>
-<p>What performance do we expect from our tuned method? Naive evaluation:</p>
+<p>Having determined tuned configurations that seem to work well, we want to find out which performance we can expect from them. However, this may require more than this naive approach:</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 instance_random$result$perf</code></pre>
@@ -1805,26 +1749,15 @@ instance_grid$result$perf</code></pre>
 classif.ce 
      0.249 </code></pre>
 </div>
+<p>The problem associated with evaluating tuned models is <em>overtuning</em>. The more we search, the more our result is likely to just be “lucky” on your training data. An extreme example would be predicting random values and “tuning” the seed value: If we try enough seeds we will get good (tuning set) performance! Also, different search spaces or search methods may introduce different amounts of randomness, so even the comparison is flawed.</p>
+<p>There is a solution to this problem, namely Nested Resampling.</p>
+<p>The <code>mlr3tuning</code> package provides an <code>AutoTuner</code> that acts like our tuning method is actually a <code>Learner</code>. In this fashion the <code>AutoTuner</code> features:</p>
 <ul>
-<li>Problem: <em>overtuning</em>:
-<ul>
-<li>The more we search, the more our result is likely to just be “lucky” on your training data</li>
-<li>Imagine predicting random values and “tuning” the seed value. If we try enough seeds we may get good (tuning set) performance!</li>
-<li>Different search spaces or search methods may introduce different amounts of randomness, so even the comparison is flawed!</li>
-</ul></li>
-<li>Solution: Nested Resampling</li>
+<li>a <code>$train()</code> method:</li>
+<li>a <code>$predict()</code> method: use model trained on the whole training data as model.</li>
 </ul>
-<p>The <code>mlr3tuning</code> package provides an <code>AutoTuner</code> that acts like our tuning method is actually a <code>Learner</code>!</p>
-<ul>
-<li><code>$train()</code> method:
-<ul>
-<li>Tune hyperparameters on the training data, using a resampling strategy (below 5 fold CV).</li>
-<li>Train a model with optimal hyperparameters on whole training data.</li>
-</ul></li>
-<li><code>$predict()</code> method: use model trained on the whole training data as model.</li>
-<li>This is just the workflow we use when tuning hyperparameters: Find the best parameters and use them for training.</li>
-<li>The <code>AutoTuner</code> does exactly this.</li>
-</ul>
+<p>The <code>$train()</code> method facilitates tuning of hyperparameters on the training data, using a resampling strategy (below we use 5-fold CV). Then, we actually train a model with optimal hyperparameters on whole training data.</p>
+<p>The <code>AutoTuner</code> finds the best parameters and uses them for training.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 grid_auto = AutoTuner$new(
@@ -1836,16 +1769,12 @@ grid_auto = AutoTuner$new(
   tuner = tnr(&quot;grid_search&quot;, resolution = 18)
 )</code></pre>
 </div>
-<ul>
-<li>The autotuner behaves just like a <code>Learner</code>. It can be used to combine the steps of hyperparameter tuning and model fitting, but is especially useful for resampling and fair comparison of performance through benchmarking.</li>
-</ul>
+<p>The autotuner behaves just like a <code>Learner</code>. It can be used to combine the steps of hyperparameter tuning and model fitting but is especially useful for resampling and <em>fair</em> comparison of performance through benchmarking.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 resample(task, grid_auto, cv10_instance)$aggregate()</code></pre>
 </div>
-<ul>
-<li>Essentially this is the performance of a “knn with optimal hyperparameters found by grid search”</li>
-</ul>
+<p>Essentially, this is the performance of a “knn with optimal hyperparameters found by grid search”</p>
 <h2 id="appendix">Appendix</h2>
 <h3 id="example-tuning-with-larger-budget">Example: Tuning With Larger Budget</h3>
 <p>It is always interesting to look at what could have been. The following dataset contains an optimization run result with 3600 evaluations–more than above by a factor of 100.</p>
@@ -1881,27 +1810,21 @@ perfdata # obtained from mlr-outreach github repository</code></pre>
 3599:      0.273 &lt;list&gt; rectangular 28 1.940716  TRUE
 3600:      0.351 &lt;list&gt;        rank  3 2.683639 FALSE</code></pre>
 </div>
-<ul>
-<li>The scale effect is just as visible.</li>
-</ul>
+<p>The scale effect is just as visible as before with fewer data.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 ggplot(perfdata, aes(x = k, y = classif.ce, color = scale)) +
   geom_point(size = 2, alpha = 0.3)</code></pre>
 <p><img src="2020-03-11-mlr3tuning_tutorial_german_credit_files/figure-html5/unnamed-chunk-29-1.png" width="624" /></p>
 </div>
-<ul>
-<li>There seems to be a pattern by kernel as well…</li>
-</ul>
+<p>Now, there seems to be a visible pattern by kernel as well:</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 ggplot(perfdata, aes(x = k, y = classif.ce, color = kernel)) +
   geom_point(size = 2, alpha = 0.3)</code></pre>
 <p><img src="2020-03-11-mlr3tuning_tutorial_german_credit_files/figure-html5/unnamed-chunk-30-1.png" width="624" /></p>
 </div>
-<ul>
-<li>In fact, if we zoom in to <code>(5, 30)</code> x <code>(0.2, 0.3)</code> and do loess smoothing we see that different kernels have their optimum at different <code>k</code>.</li>
-</ul>
+<p>In fact, if we zoom in to <code>(5, 30)</code> x <code>(0.2, 0.3)</code> and do decrease smoothing we see that different kernels have their optimum at different <code>k</code>.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 ggplot(perfdata, aes(x = k, y = classif.ce, color = kernel,
@@ -1910,9 +1833,7 @@ ggplot(perfdata, aes(x = k, y = classif.ce, color = kernel,
   xlim(5, 30) + ylim(0.2, 0.3)</code></pre>
 <p><img src="2020-03-11-mlr3tuning_tutorial_german_credit_files/figure-html5/unnamed-chunk-31-1.png" width="624" /></p>
 </div>
-<ul>
-<li>What about the <code>distance</code> parameter? If we select all results with <code>k</code> between 10 and 20 and plot distance and kernel we see an approximate relationship</li>
-</ul>
+<p>What about the <code>distance</code> parameter? If we select all results with <code>k</code> between 10 and 20 and plot distance and kernel we see an approximate relationship:</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 ggplot(perfdata[k &gt; 10 &amp; k &lt; 20 &amp; scale == TRUE],
@@ -1920,16 +1841,9 @@ ggplot(perfdata[k &gt; 10 &amp; k &lt; 20 &amp; scale == TRUE],
   geom_point(size = 2) + geom_smooth()</code></pre>
 <p><img src="2020-03-11-mlr3tuning_tutorial_german_credit_files/figure-html5/unnamed-chunk-32-1.png" width="624" /></p>
 </div>
-<ul>
-<li>Observations:
-<ul>
-<li>The <code>scale</code> makes a lot of difference</li>
-<li>The <code>distance</code> seems to make the least difference</li>
-<li>Had we done grid search, we would have wasted a lot of evaluations on trying different <code>distance</code> values that usually give similar results. This is why random search works well.</li>
-<li>An even more intelligent approach would be to observe that <code>scale = FALSE</code> performs badly and not try out so many points with that one.</li>
-</ul></li>
-</ul>
+<p>In sum our observations are: The <code>scale</code> parameter is very influential. The <code>distance</code> type seems to be the least influential. If we had performed a grid search, we would have wasted a lot of evaluations on trying different <code>distance</code> values that usually give similar results. This is why random search tends to work well. One could also observe that <code>scale = FALSE</code> performs badly. Then, we should not try out so many points with this option.</p>
 <h3 id="very-quick-paradox-primer">Very quick <code>paradox</code> primer</h3>
+<p>We use <code>paradox</code> in this use case. It may be helpful to give you a very short introduction to it.</p>
 <p>Initialization:</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
