@@ -67,7 +67,7 @@
 <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["2020-03-11-mlr3-basics-german-credit_files/bowser-1.9.3/bowser.min.js","2020-03-11-mlr3-basics-german-credit_files/distill-2.2.21/template.v2.js","2020-03-11-mlr3-basics-german-credit_files/figure-html5/unnamed-chunk-10-1.png","2020-03-11-mlr3-basics-german-credit_files/figure-html5/unnamed-chunk-11-1.png","2020-03-11-mlr3-basics-german-credit_files/figure-html5/unnamed-chunk-11-2.png","2020-03-11-mlr3-basics-german-credit_files/figure-html5/unnamed-chunk-19-1.png","2020-03-11-mlr3-basics-german-credit_files/header-attrs-2.1/header-attrs.js","2020-03-11-mlr3-basics-german-credit_files/jquery-1.11.3/jquery.min.js","2020-03-11-mlr3-basics-german-credit_files/webcomponents-2.0.0/webcomponents.js"]}
+  {"type":"character","attributes":{},"value":["2020-03-11-mlr3-basics-german-credit_files/bowser-1.9.3/bowser.min.js","2020-03-11-mlr3-basics-german-credit_files/distill-2.2.21/template.v2.js","2020-03-11-mlr3-basics-german-credit_files/figure-html5/unnamed-chunk-10-1.png","2020-03-11-mlr3-basics-german-credit_files/figure-html5/unnamed-chunk-11-1.png","2020-03-11-mlr3-basics-german-credit_files/figure-html5/unnamed-chunk-11-2.png","2020-03-11-mlr3-basics-german-credit_files/figure-html5/unnamed-chunk-19-1.png","2020-03-11-mlr3-basics-german-credit_files/figure-html5/unnamed-chunk-24-1.png","2020-03-11-mlr3-basics-german-credit_files/header-attrs-2.1/header-attrs.js","2020-03-11-mlr3-basics-german-credit_files/jquery-1.11.3/jquery.min.js","2020-03-11-mlr3-basics-german-credit_files/webcomponents-2.0.0/webcomponents.js"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
 
@@ -1282,7 +1282,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <!--/radix_placeholder_distill-->
-  <script src="../../site_libs/header-attrs-2.1/header-attrs.js"></script>
   <script src="../../site_libs/jquery-1.11.3/jquery.min.js"></script>
   <script src="../../site_libs/bowser-1.9.3/bowser.min.js"></script>
   <script src="../../site_libs/webcomponents-2.0.0/webcomponents.js"></script>
@@ -1344,7 +1343,6 @@ document.addEventListener('DOMContentLoaded', function() {
 <li><a href="/basics_pipelines_german_credit/">Part II - Pipelines</a></li>
 <li><a href="/basics_tuning_german_credit/">Part III - Tuning</a></li>
 </ul>
-<p><strong>mlr3</strong> is a machine learning framework for R. Together with other packages from the same developers, mostly following the naming scheme "mlr3___", it offers functionality around developing, tuning, and evaluating machine learning workflows.</p>
 <p>We will walk through this tutorial interactively. The text is kept short to be followed in real time.</p>
 <h2 id="prerequisites">Prerequisites</h2>
 <p>Ensure all packages used in this tutorial are installed. This includes packages from the <code>mlr3</code> family, as well as other tools for data handling, cleaning and visualisation which we are going to use. <a href="#packages">Appendix for more info about packages</a></p>
@@ -1381,15 +1379,13 @@ library(&quot;mlr3learners&quot;)
 library(&quot;ggplot2&quot;)</code></pre>
 </div>
 <h2 id="machine-learning-use-case-german-credit-data">Machine Learning Use Case: German Credit Data</h2>
-<ul>
-<li><p>The German credit data is a research data set of the University of Hamburg from 1994 donated by Prof. Hans Hoffman.</p></li>
-<li><p>Description (and manual download) can be found at the <a href="https://archive.ics.uci.edu/ml/datasets/Statlog+%28German+Credit+Data%29">UCI repository</a>.</p></li>
-<li><p>Goal is to classify people by their credit risk (<strong>good</strong> or <strong>bad</strong>) using 20 features:</p></li>
-</ul>
+<p>In our tutorials we use the <code>german_credit</code> dataset for our next example. The German credit data is a research data set of the University of Hamburg from 1994 donated by Prof. Hans Hoffman. The data features personal, demographic and financial data on individuals. Furthermore, it contains an assessment on the individual’s creditworthniness. A detailed description (and manual download) can be found at the <a href="https://archive.ics.uci.edu/ml/datasets/Statlog+%28German+Credit+Data%29">UCI repository</a>.</p>
+<p>As the <code>"GermanCredit"</code> data set is frequently used within <a href="https://mlr3.mlr-org.com">mlr3</a>, there is a task already existing just for this purpose.</p>
+<p>Our goal is to classify people by their credit risk (<strong>good</strong> or <strong>bad</strong>) using 20 features:</p>
 <table>
 <colgroup>
-<col style="width: 28%" />
-<col style="width: 71%" />
+<col style="width: 30%" />
+<col style="width: 69%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -1399,83 +1395,83 @@ library(&quot;ggplot2&quot;)</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td>checking_status</td>
+<td><code>checking_status</code></td>
 <td>status/balance of checking account at this bank</td>
 </tr>
 <tr class="even">
-<td>duration</td>
+<td><code>duration</code></td>
 <td>duration of the credit in months</td>
 </tr>
 <tr class="odd">
-<td>credit_history</td>
+<td><code>credit_history</code></td>
 <td>past credit history of applicant at this bank</td>
 </tr>
 <tr class="even">
-<td>purpose</td>
+<td><code>purpose</code></td>
 <td>reason customer is applying for a loan</td>
 </tr>
 <tr class="odd">
-<td>credit_amount</td>
+<td><code>credit_amount</code></td>
 <td>amount asked by applicant</td>
 </tr>
 <tr class="even">
-<td>savings_status</td>
+<td><code>savings_status</code></td>
 <td>savings accounts/bonds at this bank</td>
 </tr>
 <tr class="odd">
-<td>employment</td>
+<td><code>employment</code></td>
 <td>present employment since</td>
 </tr>
 <tr class="even">
-<td>installment_commitment</td>
+<td><code>installment_commitment</code></td>
 <td>installment rate in percentage of disposable income</td>
 </tr>
 <tr class="odd">
-<td>personal_status</td>
+<td><code>personal_status</code></td>
 <td>combination of sex and personal status of applicant</td>
 </tr>
 <tr class="even">
-<td>other_parties</td>
+<td><code>other_parties</code></td>
 <td>other debtors/guarantors present?</td>
 </tr>
 <tr class="odd">
-<td>residence_since</td>
+<td><code>residence_since</code></td>
 <td>present residence since</td>
 </tr>
 <tr class="even">
-<td>property_magnitude</td>
+<td><code>property_magnitude</code></td>
 <td>properties that applicant has</td>
 </tr>
 <tr class="odd">
-<td>age</td>
+<td><code>age</code></td>
 <td>age in years</td>
 </tr>
 <tr class="even">
-<td>other_payment_plans</td>
+<td><code>other_payment_plans</code></td>
 <td>other installment plans the applicant is paying</td>
 </tr>
 <tr class="odd">
-<td>housing</td>
+<td><code>housing</code></td>
 <td>type of apartment rented, owned, for free / no payment</td>
 </tr>
 <tr class="even">
-<td>existing_credits</td>
+<td><code>existing_credits</code></td>
 <td>number of existing credits at this bank</td>
 </tr>
 <tr class="odd">
-<td>job</td>
+<td><code>job</code></td>
 <td>current job information</td>
 </tr>
 <tr class="even">
-<td>num_dependents</td>
+<td><code>num_dependents</code></td>
 <td>number of people being liable to provide maintenance</td>
 </tr>
 <tr class="odd">
-<td>own_telephone</td>
+<td><code>own_telephone</code></td>
 <td>is there any telephone registered for this customer?</td>
 </tr>
 <tr class="even">
-<td>foreign_worker</td>
+<td><code>foreign_worker</code></td>
 <td>is applicant foreign worker?</td>
 </tr>
 </tbody>
@@ -1492,18 +1488,91 @@ task = tsk(&quot;german_credit&quot;)</code></pre>
 credit = task$data()</code></pre>
 </div>
 <h3 id="exploring-the-data">Exploring the Data</h3>
-<ul>
-<li>We have a look at the data set before we start modeling.</li>
-<li>The <code>str()</code> and <code>summary()</code> functions gives an overview of features and their type.</li>
-<li>The <code>skimr</code> package gives more readable summaries.</li>
-<li>The <code>DataExplorer</code> package lets us visualize categorical (<code>plot_bar()</code>) and numeric (<code>plot_histogram()</code> and <code>plot_boxplot()</code>) data, as well as data relationships.</li>
-<li>Basic things to watch out for:
-<ul>
-<li>Skewed distributions</li>
-<li>Missing values</li>
-<li>Empty / rare factor variables</li>
-</ul></li>
-</ul>
+<p>We can get a quick overview on our data set using R’s summary function:</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+german_credit = task$data()
+summary(german_credit)</code></pre>
+<pre><code>
+ credit_risk      age            amount     
+ good:700    Min.   :19.00   Min.   :  250  
+ bad :300    1st Qu.:27.00   1st Qu.: 1366  
+             Median :33.00   Median : 2320  
+             Mean   :35.55   Mean   : 3271  
+             3rd Qu.:42.00   3rd Qu.: 3972  
+             Max.   :75.00   Max.   :18424  
+                                            
+                                     credit_history    duration   
+ no credits taken/all credits paid back duly: 40    Min.   : 4.0  
+ all credits at this bank paid back duly    : 49    1st Qu.:12.0  
+ existing credits paid back duly till now   :530    Median :18.0  
+ delay in paying off in the past            : 88    Mean   :20.9  
+ critical account/other credits existing    :293    3rd Qu.:24.0  
+                                                    Max.   :72.0  
+                                                                  
+         employment_duration foreign_worker     housing    installment_rate
+ unemployed        : 62      yes:963        rent    :179   Min.   :1.000   
+ ... &lt; 1 year      :172      no : 37        own     :713   1st Qu.:2.000   
+ 1 &lt;= ... &lt; 4 years:339                     for free:108   Median :3.000   
+ 4 &lt;= ... &lt; 7 years:174                                    Mean   :2.973   
+ ... &gt;= 7 years    :253                                    3rd Qu.:4.000   
+                                                           Max.   :4.000   
+                                                                           
+                                                         job     
+ unemployed/unskilled - non-resident                       : 22  
+ unskilled - resident                                      :200  
+ skilled employee/official                                 :630  
+ management/self-employed/highly qualified employee/officer:148  
+                                                                 
+                                                                 
+                                                                 
+ number_credits       other_debtors other_installment_plans people_liable  
+ Min.   :1.000   none        :907   bank  :139              Min.   :1.000  
+ 1st Qu.:1.000   co-applicant: 41   stores: 47              1st Qu.:1.000  
+ Median :1.000   guarantor   : 52   none  :814              Median :1.000  
+ Mean   :1.407                                              Mean   :1.155  
+ 3rd Qu.:2.000                                              3rd Qu.:1.000  
+ Max.   :4.000                                              Max.   :2.000  
+                                                                           
+                          personal_status_sex present_residence
+ male : divorced/separated          : 50      Min.   :1.000    
+ female : divorced/separated/married:310      1st Qu.:2.000    
+ male : single                      :548      Median :3.000    
+ male : married/widowed             : 92      Mean   :2.845    
+ female : single                    :  0      3rd Qu.:4.000    
+                                              Max.   :4.000    
+                                                               
+                                              property  
+ real estate                                      :282  
+ building society savings agreement/life insurance:232  
+ car or other                                     :332  
+ unknown/no property                              :154  
+                                                        
+                                                        
+                                                        
+                purpose                          savings   
+ domestic appliances:280   ... &lt; 100 DM              :603  
+ car (new)          :234   100 &lt;= ... &lt; 500 DM       :103  
+ radio/television   :181   500 &lt;= ... &lt; 1000 DM      : 63  
+ car (used)         :103   ... &gt;= 1000 DM            : 48  
+ others             : 97   unknown/no savings account:183  
+ retraining         : 50                                   
+ (Other)            : 55                                   
+                                        status    telephone
+ ... &lt; 0 DM                                :274   no :596  
+ 0 &lt;= ... &lt; 200 DM                         :269   yes:404  
+ ... &gt;= 200 DM / salary for at least 1 year: 63            
+ no checking account                       :394            
+                                                           
+                                                           
+                                                           </code></pre>
+<pre class="r"><code>
+dim(german_credit)</code></pre>
+<pre><code>
+[1] 1000   21</code></pre>
+</div>
+<p>Our dataset has 1000 observations and 21 columns. The variable we want to predict is <code>credit_risk</code> (either <strong>good</strong> or <strong>bad</strong>). That means we aim to classify people by their credit risk (<strong>good</strong> or <strong>bad</strong>).</p>
+<p>We recommend the <code>skimr</code> (<code>skimr::skim</code>) and <code>DataExplorer</code> (<code>DataExplorer::plot_bar</code>, <code>DataExplorer::plot_histogram</code>, <code>DataExplorer::plot_boxplot</code>) packages as they create very well readable and understandable overviews.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 skimr::skim(credit)</code></pre>
@@ -1807,37 +1876,38 @@ DataExplorer::plot_histogram(credit, nrow = 2, ncol = 3)</code></pre>
 DataExplorer::plot_boxplot(credit, by = &quot;credit_risk&quot;, nrow = 2, ncol = 3)</code></pre>
 <p><img src="2020-03-11-mlr3-basics-german-credit_files/figure-html5/unnamed-chunk-11-2.png" width="100%" /></p>
 </div>
+<p>During this exploratory analysis meaningful analysis aspects could be:</p>
+<ul>
+<li>Skewed distributions</li>
+<li>Missing values</li>
+<li>Empty / rare factor variables</li>
+</ul>
+<p>An explanatory analysis is crucial to get a feeling for your data. On the other hand the data can be validated this way. Non plausible data can be investigated or outliers can be removed.</p>
+<p>However, in this use case we do not focus on the exploratory analysis.</p>
+<p>We want to do modeling now!</p>
 <h2 id="modeling">Modeling</h2>
 <p>Considering how we are going to tackle the problem relates closely to what <code>mlr3</code> entities we will use.</p>
-<ul>
-<li>What is the problem we are trying to solve?
-<ul>
-<li>i.e. what <strong>Task</strong> do we use?</li>
-<li>Binary classification.</li>
-<li><span class="math inline">\(\Rightarrow\)</span> We use <code>TaskClassif</code>.</li>
-</ul></li>
-<li>What are appropriate learning algorithms?
-<ul>
-<li>i.e. what <strong>Learner</strong> do we use?</li>
-<li>Logistic regression, CART, Random Forest</li>
-<li><span class="math inline">\(\Rightarrow\)</span> <code>lrn("classif.log_reg")</code>, <code>lrn("classif.rpart")</code>, <code>lrn("classif.ranger")</code></li>
-</ul></li>
-<li>How do we evaluate “good” performance? <span class="math inline">\(\Rightarrow\)</span> Depends on many things! Cost of false positive vs. false negative, legal requirements, …
-<ul>
-<li>i.e. what <strong>Measure</strong> do we use?</li>
-<li>We start with misclassification error (simle!) and will also consider AUC.</li>
-<li><span class="math inline">\(\Rightarrow\)</span> <code>msr("classif.ce")</code>, <code>msr("classif.auc")</code></li>
-</ul></li>
-</ul>
+<p>The typical questions that arise when building an ML workflow are:</p>
+<p>What is the problem we are trying to solve? What are appropriate learning algorithms? How do we evaluate “good” performance?</p>
+<p>More systematically in <a href="https://mlr3.mlr-org.com">mlr3</a> they can be expressed via five components:</p>
+<ol type="1">
+<li><p>The <strong>task</strong> defintion</p></li>
+<li><p>The <strong>learner</strong> definition</p></li>
+<li><p>The <strong>training</strong></p></li>
+<li><p>The <strong>prediction</strong></p></li>
+<li><p>The evaluation via <strong>measures</strong></p></li>
+</ol>
 <h3 id="task-definition">Task Definition</h3>
-<p>We create a new task from our data in order to show how Tasks are created.</p>
-<p>With <code>TaskClassif$new()</code>, we can initialize a classification task. We need to specify a name for the task, the data we want to use and name of the target variable (here <code>"credit_risk"</code>):</p>
+<p>First of all, we are interested in the target which we want to model. Most supervised machine learning problems are <strong>regression</strong> or <strong>classification</strong> problems. However, note that other problems include unsupervised learning or time-to-event data (covered in <code>mlr3survival</code>). In the <a href="https://mlr3.mlr-org.com">mlr3</a> context to distinguish between these problems, we define <strong>tasks</strong>. If we want to solve a classification problem, we define a classifaction task – <code>TaskClassif</code>. For a regression problem, we establish a regression task – <code>TaskRegr</code>. Tasks are not only a different word for problems. They also reflect some technical properties with respect to <a href="https://mlr3.mlr-org.com">mlr3</a>.</p>
+<p>In our case it is clearly our objective to model or predict the binary <code>factor</code> variable <code>credit_risk</code>. Thus, we use <code>TaskClassif</code>.</p>
+<p>With <code>TaskClassif$new()</code> we can initialize a classification task. We need to specify a name for the task (we choose <code>"GermanCredit"</code>), the data we want to use (<code>credit</code>) and name of the target (<code>"credit_risk"</code>):</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 task = TaskClassif$new(&quot;GermanCredit&quot;, credit, &quot;credit_risk&quot;)</code></pre>
 </div>
 <h3 id="learner-definition">Learner Definition</h3>
-<p>You need to install and load the <code>mlr3learners</code> package to get access to a wide range of learners. All available <code>Learner</code>s can be obtained by:</p>
+<p>After having decided <em>what</em> should be modeled, we need to decide on how. This means we need to decide which learning algrorithms, or <strong>Learners</strong> are appropriate. Using prior knowledge (e.g. knowing that it is a classification task or assuming that the classes are linearly separable) one ends up with one or some suitable <strong>Learners</strong>. Many learners can be obtained via the <code>mlr3learners</code> package (CRAN). Additionally, many learners are provided on the <code>mlr3learners</code> organsisation <a href="https://github.com/mlr3learners">github page</a>. These two ressources combined account for a large fraction of standard learning algorithms. As <a href="https://mlr3.mlr-org.com">mlr3</a> usually only wraps learners from packages, it is easy to create a formal <strong>Learner</strong> by yourself using our template (). You may find the section ‘Extending mlr3’ in this book also very helpful. If you happen to write your own <strong>Learner</strong> in <a href="https://mlr3.mlr-org.com">mlr3</a>, we would be happy if you share it with the <a href="https://mlr3.mlr-org.com">mlr3</a> community.</p>
+<p>All available <code>Learner</code>s (i.e. all which you have installed from <a href="https://mlr3.mlr-org.com">mlr3</a>, <code>mlr3learners</code>, the mlr3learners github page or self-written ones) can be obtained by:</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 mlr_learners</code></pre>
@@ -1850,58 +1920,194 @@ Keys: classif.cv_glmnet, classif.debug, classif.featureless,
   regr.featureless, regr.glmnet, regr.kknn, regr.km, regr.lm,
   regr.ranger, regr.rpart, regr.svm, regr.xgboost</code></pre>
 </div>
+<p>For our problem, a suitable learner could be one of the following: Logistic regression, CART, Random Forest (or many more).</p>
 <p>A learner can be initialized with the <code>lrn</code> function and the name of the learner (e.g., <code>lrn("classif.xxx")</code>). Use <code>?mlr_learners_xxx</code> to open the help page of a learner named <code>xxx</code>, or use <a href="https://mlr3learners.mlr-org.com/reference/index.html">the internet</a>.</p>
-<h3 id="model-fitting-logistic-regression">Model Fitting: Logistic Regression</h3>
-<ul>
-<li>The <code>Learner</code> for logistic regression uses R’s <code>glm()</code> function and is provided by the <code>mlr3learners</code> package.</li>
-</ul>
+<p>For example a logistic regression can be initialised in the following manner (logistic regression using R’s <code>glm()</code> function and is provided by the <code>mlr3learners</code> package).</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 learner_logreg = lrn(&quot;classif.log_reg&quot;)</code></pre>
 </div>
-<ul>
-<li>Model fitting is easy, the resulting model is stored in the <code>$model</code> slot.</li>
-</ul>
+<p>Alternatively but equivalently, one could use:</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+learner_logreg = LearnerClassifLogReg$new()</code></pre>
+</div>
+<h3 id="training">Training</h3>
+<p>Training is the procedure, where a model is fitted on data. The selected model is trained so that is reflects the data situation in the best possible manner.</p>
+<h4 id="logistic-regression">Logistic Regression</h4>
+<p>We start with the example of the logistic regression. However, you will immediately see that the procedure generalises to any learner very easily.</p>
+<p>An initialised learner can be trained on data using the <code>R6</code> method <code>train</code>.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 learner_logreg$train(task)</code></pre>
 </div>
-<ul>
-<li>Inspecting the model. It is the result returned by <code>glm()</code> and can be inspected as such. (The output is too much to show it in the post - but you should definitely do it!)</li>
-</ul>
+<p>Typically, in machine learning, one does not use the full data which is available but a subset, the so-called training data.</p>
+<p>To efficiently perform a spilt of the data one could do the following:</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
-# summary(learner_logreg$model)</code></pre>
+train_set = sample(task$nrow, 0.8 * task$nrow)
+test_set = setdiff(seq_len(task$nrow), train_set)</code></pre>
 </div>
-<h3 id="model-fitting-random-forest">Model Fitting: Random Forest</h3>
-<ul>
-<li>Same procedure as before.</li>
-<li>We let the model store the variable importance (<code>importance = "permutation"</code>)</li>
-</ul>
+<p>80 percent of the data is used for training. The remaining 20 percent are used for evaluation at a subsequent later point in time. <code>train_set</code> is an integer vector displaying the selected rows of the original data set.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+head(train_set)</code></pre>
+<pre><code>
+[1] 192 887  86 784 801 673</code></pre>
+</div>
+<p>In <a href="https://mlr3.mlr-org.com">mlr3</a> the training with a subset of the data is declared by the additional argument <code>row_ids = train_set</code>.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+learner_logreg$train(task, row_ids = train_set)</code></pre>
+</div>
+<p>We used logistic regression from the <a href="https://cran.r-project.org/package=stats">stats</a> package. To be precise <code>stats::glm</code> with the <code>family</code> argument set to <code>family = binomial()</code>. All other arguments are set to the default of the <a href="https://www.rdocumentation.org/packages/stats/topics/glm"><code>stats::glm</code></a> function. <a href="https://mlr3.mlr-org.com">mlr3</a> only works as a wrapper. The original model can be accessed via:</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+learner_logreg$model</code></pre>
+<pre><code>
+Call:  stats::glm(formula = task$formula(), family = &quot;binomial&quot;, data = task$data(), 
+    model = FALSE)
+
+Coefficients:
+                                                  (Intercept)  
+                                                    -0.169000  
+                                                          age  
+                                                    -0.017889  
+                                                       amount  
+                                                     0.000109  
+        credit_historyall credits at this bank paid back duly  
+                                                     0.049299  
+       credit_historyexisting credits paid back duly till now  
+                                                    -0.676346  
+                credit_historydelay in paying off in the past  
+                                                    -0.736089  
+        credit_historycritical account/other credits existing  
+                                                    -1.417535  
+                                                     duration  
+                                                     0.036276  
+                                        employment_duration.L  
+                                                    -0.517899  
+                                        employment_duration.Q  
+                                                     0.271832  
+                                        employment_duration.C  
+                                                     0.382256  
+                                        employment_duration^4  
+                                                     0.190810  
+                                             foreign_workerno  
+                                                    -1.177852  
+                                                   housingown  
+                                                    -0.396100  
+                                              housingfor free  
+                                                    -0.902827  
+                                             installment_rate  
+                                                     0.319671  
+                                      jobunskilled - resident  
+                                                     0.930743  
+                                 jobskilled employee/official  
+                                                     0.842496  
+jobmanagement/self-employed/highly qualified employee/officer  
+                                                     0.974121  
+                                               number_credits  
+                                                     0.113429  
+                                    other_debtorsco-applicant  
+                                                     0.397091  
+                                       other_debtorsguarantor  
+                                                    -0.995089  
+                                other_installment_plansstores  
+                                                    -0.221707  
+                                  other_installment_plansnone  
+                                                    -0.577106  
+                                                people_liable  
+                                                     0.373773  
+       personal_status_sexfemale : divorced/separated/married  
+                                                    -0.190423  
+                             personal_status_sexmale : single  
+                                                    -0.801198  
+                    personal_status_sexmale : married/widowed  
+                                                    -0.550974  
+                                            present_residence  
+                                                    -0.015591  
+    propertybuilding society savings agreement/life insurance  
+                                                     0.214606  
+                                         propertycar or other  
+                                                     0.108431  
+                                  propertyunknown/no property  
+                                                     1.101243  
+                                            purposecar (used)  
+                                                    -1.612521  
+                                   purposefurniture/equipment  
+                                                    -1.246110  
+                                      purposeradio/television  
+                                                    -0.491197  
+                                   purposedomestic appliances  
+                                                    -0.623486  
+                                               purposerepairs  
+                                                     0.698793  
+                                             purposeeducation  
+                                                    -0.544868  
+                                            purposeretraining  
+                                                    -0.093641  
+                                              purposebusiness  
+                                                    -1.514206  
+                                                purposeothers  
+                                                    -0.619338  
+                                   savings100 &lt;= ... &lt; 500 DM  
+                                                    -0.260712  
+                                  savings500 &lt;= ... &lt; 1000 DM  
+                                                    -0.593219  
+                                        savings... &gt;= 1000 DM  
+                                                    -1.577837  
+                            savingsunknown/no savings account  
+                                                    -0.923413  
+                                      status0 &lt;= ... &lt; 200 DM  
+                                                    -0.305674  
+             status... &gt;= 200 DM / salary for at least 1 year  
+                                                    -1.164042  
+                                    statusno checking account  
+                                                    -1.654290  
+                                                 telephoneyes  
+                                                    -0.364520  
+
+Degrees of Freedom: 799 Total (i.e. Null);  751 Residual
+Null Deviance:      993.7 
+Residual Deviance: 713.9    AIC: 811.9</code></pre>
+</div>
+<p>The stored object is a normal <code>glm</code> object and works with its <code>S3</code> methods.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+class(learner_logreg$model)
+summary(learner_logreg$model)</code></pre>
+</div>
+<p><code>summary</code> returns the result of <code>glm()</code> and can be inspected as such. (The output is too much to show it in the post - but you should definitely do it!)</p>
+<h4 id="random-forest">Random Forest</h4>
+<p>Just like the logistic regression, we could train a random forest instead. We use the fast implementation from the <a href="https://cran.r-project.org/package=ranger">ranger</a> package. To do so we first need to define the learner and then actually train it. Before we just used the default logistic regression learner.</p>
+<p>We now additionally supply the importance argument (<code>importance = "permutation"</code>). Doing so, we override the default and let the learner do feature importance determination based on permutation feature importance.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 learner_rf = lrn(&quot;classif.ranger&quot;, importance = &quot;permutation&quot;)
 learner_rf$train(task)</code></pre>
 </div>
-<ul>
-<li>We can access the importance values using <code>$importance()</code></li>
-</ul>
+<p>We can access the importance values using <code>$importance()</code>. The <code>R6</code> importance method plots the feature importance derived during training.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 learner_rf$importance()</code></pre>
 <pre><code>
-                 status                duration          credit_history                  amount                 savings 
-           0.0385156998            0.0198591001            0.0128787938            0.0128386502            0.0086113981 
-                    age                property     employment_duration other_installment_plans                 purpose 
-           0.0068087553            0.0052470343            0.0046539896            0.0038662998            0.0037037053 
-       installment_rate           other_debtors       present_residence                 housing          number_credits 
-           0.0035669248            0.0031286409            0.0028212935            0.0023686904            0.0022347954 
-    personal_status_sex                     job               telephone           people_liable          foreign_worker 
-           0.0018073103            0.0017763112            0.0012640172            0.0002386399            0.0002053380 </code></pre>
+                 status                duration                  amount 
+           0.0378896914            0.0194936208            0.0128649871 
+         credit_history                     age                 savings 
+           0.0127976969            0.0080353106            0.0078620250 
+    employment_duration        installment_rate                property 
+           0.0058204571            0.0052860323            0.0048220951 
+other_installment_plans                 purpose       present_residence 
+           0.0048193882            0.0039523087            0.0032598609 
+          other_debtors     personal_status_sex                 housing 
+           0.0031657482            0.0025006772            0.0018926451 
+                    job          number_credits               telephone 
+           0.0018378665            0.0017186520            0.0012834666 
+          people_liable          foreign_worker 
+           0.0010916984            0.0002252254 </code></pre>
 </div>
-<ul>
-<li>We convert the importance into a <code>data.table</code> so we can plot it</li>
-</ul>
+<p>In order to obtain a better plot, we convert the importance into a <code>data.table</code>.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 importance = as.data.table(learner_rf$importance(), keep.rownames = TRUE)
@@ -1909,140 +2115,106 @@ colnames(importance) = c(&quot;Feature&quot;, &quot;Importance&quot;)
 importance</code></pre>
 <pre><code>
                     Feature   Importance
- 1:                  status 0.0385156998
- 2:                duration 0.0198591001
- 3:          credit_history 0.0128787938
- 4:                  amount 0.0128386502
- 5:                 savings 0.0086113981
- 6:                     age 0.0068087553
- 7:                property 0.0052470343
- 8:     employment_duration 0.0046539896
- 9: other_installment_plans 0.0038662998
-10:                 purpose 0.0037037053
-11:        installment_rate 0.0035669248
-12:           other_debtors 0.0031286409
-13:       present_residence 0.0028212935
-14:                 housing 0.0023686904
-15:          number_credits 0.0022347954
-16:     personal_status_sex 0.0018073103
-17:                     job 0.0017763112
-18:               telephone 0.0012640172
-19:           people_liable 0.0002386399
-20:          foreign_worker 0.0002053380</code></pre>
+ 1:                  status 0.0378896914
+ 2:                duration 0.0194936208
+ 3:                  amount 0.0128649871
+ 4:          credit_history 0.0127976969
+ 5:                     age 0.0080353106
+ 6:                 savings 0.0078620250
+ 7:     employment_duration 0.0058204571
+ 8:        installment_rate 0.0052860323
+ 9:                property 0.0048220951
+10: other_installment_plans 0.0048193882
+11:                 purpose 0.0039523087
+12:       present_residence 0.0032598609
+13:           other_debtors 0.0031657482
+14:     personal_status_sex 0.0025006772
+15:                 housing 0.0018926451
+16:                     job 0.0018378665
+17:          number_credits 0.0017186520
+18:               telephone 0.0012834666
+19:           people_liable 0.0010916984
+20:          foreign_worker 0.0002252254</code></pre>
 <pre class="r"><code>
 ggplot(importance, aes(x = reorder(Feature, Importance), y = Importance)) +
   geom_col() + coord_flip() + xlab(&quot;&quot;)</code></pre>
-<p><img src="2020-03-11-mlr3-basics-german-credit_files/figure-html5/unnamed-chunk-19-1.png" width="624" /></p>
+<p><img src="2020-03-11-mlr3-basics-german-credit_files/figure-html5/unnamed-chunk-24-1.png" width="624" /></p>
 </div>
-<h2 id="prediction">Prediction</h2>
-<ul>
-<li>A model, once trained, can be used to predict outcomes from new data.</li>
-<li>We simulate new data by sampling from the credit data. No need to pay close attention what is going on here.</li>
-</ul>
+<h3 id="prediction">Prediction</h3>
+<p>After training the machine learning model, the model can be used for prediction. Usually, prediction is the main purpose of machine learning models. In our case, the model can be used to classify new credit applicants w.r.t. their associated credit status (good vs. bad) on the basis of the features. Typically, machine learning models create numeric values. In the regression case this is very natural. For classification, most models create scores or probabilites. Based on these values, one can derive class predictions.</p>
+<h4 id="predict-classes">Predict Classes</h4>
+<p>First, we directly predict classes. Here, we do something which is almost never a good idea in machine learning: Use the same data for prediction as for training. However, for the purpose of demonstration we can negelct this.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
-# For each variable, we randomly sample 3 values with replacement
-newdata = as.data.table(lapply(credit, sample, size = 3, replace = TRUE))
-# we need to set the &#39;class&#39; column to &#39;NA&#39;, otherwise mlr3 thinks this is the
-# actual outcome. This is desirable for performance evaluation, but not here.
-newdata$credit_risk = NULL
-newdata</code></pre>
-<pre><code>
-   age amount                           credit_history duration employment_duration foreign_worker housing
-1:  54   2848 existing credits paid back duly till now       18      ... &gt;= 7 years            yes     own
-2:  42   1287 existing credits paid back duly till now       24  1 &lt;= ... &lt; 4 years            yes    rent
-3:  26   1453  critical account/other credits existing       24      ... &gt;= 7 years            yes     own
-   installment_rate                       job number_credits other_debtors other_installment_plans people_liable
-1:                3 skilled employee/official              1          none                    none             1
-2:                3 skilled employee/official              1          none                  stores             1
-3:                2 skilled employee/official              1          none                    none             1
-   personal_status_sex present_residence                                          property          purpose
-1:       male : single                 4 building society savings agreement/life insurance radio/television
-2:       male : single                 1                                       real estate           others
-3:       male : single                 4                                      car or other        car (new)
-                      savings              status telephone
-1: unknown/no savings account   0 &lt;= ... &lt; 200 DM        no
-2:             ... &gt;= 1000 DM no checking account        no
-3:               ... &lt; 100 DM          ... &lt; 0 DM       yes</code></pre>
-</div>
-<h3 id="predict-classes">Predict Classes</h3>
-<ul>
-<li>Let’s see what the models predict</li>
-</ul>
-<div class="layout-chunk" data-layout="l-body">
-<pre class="r"><code>
-pred_logreg = learner_logreg$predict_newdata(newdata)
-pred_rf = learner_rf$predict_newdata(newdata)
-
+pred_logreg = learner_logreg$predict_newdata(german_credit)
+pred_rf = learner_rf$predict_newdata(german_credit)
 pred_logreg</code></pre>
 <pre><code>
-&lt;PredictionClassif&gt; for 3 observations:
- row_id truth response
-      1  &lt;NA&gt;     good
-      2  &lt;NA&gt;     good
-      3  &lt;NA&gt;     good</code></pre>
+&lt;PredictionClassif&gt; for 1000 observations:
+    row_id truth response
+         1  good     good
+         2   bad      bad
+         3  good     good
+---                      
+       998  good     good
+       999   bad      bad
+      1000  good     good</code></pre>
 <pre class="r"><code>
 pred_rf</code></pre>
 <pre><code>
-&lt;PredictionClassif&gt; for 3 observations:
- row_id truth response
-      1  &lt;NA&gt;     good
-      2  &lt;NA&gt;     good
-      3  &lt;NA&gt;     good</code></pre>
+&lt;PredictionClassif&gt; for 1000 observations:
+    row_id truth response
+         1  good     good
+         2   bad      bad
+         3  good     good
+---                      
+       998  good     good
+       999   bad      bad
+      1000  good     good</code></pre>
 </div>
-<ul>
-<li>The <code>predict()</code> function actually gives a <code>Prediction</code> object. It can be converted to a <code>data.table</code>, as well as inspected for other things.</li>
-</ul>
+<p>The <code>predict()</code> function gives a <code>Prediction</code> object. It can be converted to a <code>data.table</code> if one wants to use it downstream.</p>
+<p>We display the prediction results aggregated in a confusion matrix.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
-pred = learner_rf$predict_newdata(newdata)
-
-head(as.data.table(pred))</code></pre>
-<pre><code>
-   row_id truth response
-1:      1  &lt;NA&gt;     good
-2:      2  &lt;NA&gt;     good
-3:      3  &lt;NA&gt;     good</code></pre>
-<pre class="r"><code>
-pred$confusion</code></pre>
+pred_logreg$confusion</code></pre>
 <pre><code>
         truth
-response good bad &lt;NA&gt;
-    good    0   0    3
-    bad     0   0    0</code></pre>
+response good bad
+    good  621 134
+    bad    79 166</code></pre>
+<pre class="r"><code>
+pred_rf$confusion</code></pre>
+<pre><code>
+        truth
+response good bad
+    good  700   0
+    bad     0 300</code></pre>
 </div>
-<ul>
-<li>The predictions may disagree, but which do we trust most? We should do <a href="#performance-evaluation">Performance Evaluation</a> and <a href="#performance-comparison-and-benchmarks">benchmarks</a>!</li>
-</ul>
-<h3 id="predict-probabilities">Predict Probabilities</h3>
-<ul>
-<li>Learners may not only predict a class variable (“response”), but also their degree of “belief” / uncertainty in a given response.</li>
-<li>We achieve this by setting the <code>$predict_type</code> slot to <code>"prob"</code>.</li>
-<li>Sometimes this needs to be done <em>before</em> the learner is trained.</li>
-<li>Alternatively, we can directly create the learner with this option: <code>lrn("classif.log_reg", predict_type = "prob")</code></li>
-</ul>
+<p>The random forest seems to perform much better than the logistic regression. Based on this output, we would always want the random forest to do our credit worthiness classification. However, as outlined, we evalaute on the training data. It is possible that the results are steered by overfitting. Additionally, we use the default options of the packages which seems ‘unfair’. It could be that the default options of the random forest are much better suited to the data situation than the logistic regression. We should do performance evaluation, tuning and benchmarks</p>
+<h4 id="predict-probabilities">Predict Probabilities</h4>
+<p>Most learners may not only predict a class variable (“response”), but also their degree of “belief” / uncertainty in a given response. Typically, we achieve this by setting the <code>$predict_type</code> slot to <code>"prob"</code>. Sometimes this needs to be done <em>before</em> the learner is trained. This is necessary because the wrapped package requires this. Alternatively, we can directly create the learner with this option: <code>lrn("classif.log_reg", predict_type = "prob")</code>.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 learner_logreg$predict_type = &quot;prob&quot;</code></pre>
 </div>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
-learner_logreg$predict_newdata(newdata)</code></pre>
+learner_logreg$predict_newdata(german_credit)</code></pre>
 <pre><code>
-&lt;PredictionClassif&gt; for 3 observations:
- row_id truth response prob.good   prob.bad
-      1  &lt;NA&gt;     good 0.8825901 0.11740991
-      2  &lt;NA&gt;     good 0.9420820 0.05791795
-      3  &lt;NA&gt;     good 0.7456349 0.25436509</code></pre>
+&lt;PredictionClassif&gt; for 1000 observations:
+    row_id truth response prob.good   prob.bad
+         1  good     good 0.9708296 0.02917040
+         2   bad      bad 0.2714424 0.72855763
+         3  good     good 0.9708825 0.02911749
+---                                           
+       998  good     good 0.9197164 0.08028359
+       999   bad      bad 0.2796281 0.72037186
+      1000  good     good 0.7653637 0.23463628</code></pre>
 </div>
-<ul>
-<li>Sometimes, you need to be careful when interpreting these values as probabilities!</li>
-</ul>
-<h1 id="performance-evaluation">Performance Evaluation</h1>
-<p>To measure the performance of a learner on new unseen data, we usually mimic the scenario of unseen data by splitting up the data into training and test set. The training set is used for training the learner, and the test set is only used for predicting and evaluating the performance of the trained learner. Many resampling methods (cross-validation, bootstrap) repeat the splitting process in different ways.</p>
-<ul>
-<li>We need to specify the resampling scheme using the <code>rsmp()</code> function:</li>
-</ul>
+<p>Note that sometimes one needs to be cautious when dealing with the probability interpretation of the predictions.</p>
+<h3 id="performance-evaluation">Performance Evaluation</h3>
+<p>To measure the performance of a learner on new unseen data, we usually mimic the scenario of unseen data by splitting up the data into training and test set. The training set is used for training the learner, and the test set is only used for predicting and evaluating the performance of the trained learner. Numerous resampling methods (cross-validation, bootstrap) repeat the splitting process in different ways.</p>
+<p>We need to specify the resampling strategy using the <code>rsmp()</code> function:</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 resampling = rsmp(&quot;holdout&quot;, ratio = 2 / 3)
@@ -2052,9 +2224,7 @@ print(resampling)</code></pre>
 * Instantiated: FALSE
 * Parameters: ratio=0.6667</code></pre>
 </div>
-<ul>
-<li>We use <code>resample()</code> to do the resampling calculation:</li>
-</ul>
+<p>Here, we use “holdout”, a simple train-test split (with just one interation). We use the <code>resample()</code> function to undertake the resampling calculation:</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 res = resample(task, learner_logreg, resampling)
@@ -2066,45 +2236,41 @@ res</code></pre>
 * Warnings: 0 in 0 iterations
 * Errors: 0 in 0 iterations</code></pre>
 </div>
-<ul>
-<li>The default score of the measure is included in the <code>$aggregate()</code> slot:</li>
-</ul>
+<p>The default score of the measure is included in the <code>$aggregate()</code> slot:</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 res$aggregate()</code></pre>
 <pre><code>
 classif.ce 
- 0.2642643 </code></pre>
+ 0.2732733 </code></pre>
 </div>
-<ul>
-<li>We can easily do differend resampling schemes, e.g. repeated holdout (<code>"subsampling"</code>), or cross validation. - Most methods do repeated train/predict cycles on different data subsets and aggregate the result (usually as the <code>mean()</code>). Doing this manually would require us to write loops.</li>
-</ul>
+<p>The default in this scenario is <code>classif.ce</code>. This refers to the classification error. A low value close to one is desired.</p>
+<p>We can easily run differend resampling strategies, e.g. repeated holdout (<code>"subsampling"</code>), or cross validation. Most methods perform repeated train/predict cycles on different data subsets and aggregate the result (usually as the <code>mean()</code>). Doing this manually would require us to write loops. <a href="https://mlr3.mlr-org.com">mlr3</a> does the job for us.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 res_sub = resample(task, learner_logreg, rsmp(&quot;subsampling&quot;, repeats = 10))
 res_sub$aggregate()</code></pre>
 <pre><code>
 classif.ce 
- 0.2459459 </code></pre>
+ 0.2441441 </code></pre>
 </div>
+<p>Instead, we could also apply cross-validation.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 res_cv = resample(task, learner_logreg, rsmp(&quot;cv&quot;, folds = 10))
 res_cv$aggregate()</code></pre>
 <pre><code>
 classif.ce 
-     0.248 </code></pre>
+     0.244 </code></pre>
 </div>
-<ul>
-<li>We can also calculate scores for different measures (e.g., <code>msr("classif.fpr")</code> for the false positive rate).</li>
-</ul>
+<p><a href="https://mlr3.mlr-org.com">mlr3</a> features scores for many more measures. Here we apply <code>msr("classif.fpr")</code> for the false positive rate, or <code>msr("classif.fnr")</code> for the false negative rate. Multiple measures are entered via a list.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 # false positive rate
 res_cv$aggregate(msr(&quot;classif.fpr&quot;))</code></pre>
 <pre><code>
 classif.fpr 
-  0.5046841 </code></pre>
+  0.5058373 </code></pre>
 <pre class="r"><code>
 # false positive rate and false negative
 msr_list = list(
@@ -2114,11 +2280,9 @@ msr_list = list(
 res_cv$aggregate(msr_list)</code></pre>
 <pre><code>
 classif.fpr classif.fnr 
-  0.5046841   0.1390239 </code></pre>
+  0.5058373   0.1319278 </code></pre>
 </div>
-<ul>
-<li>There are a few more resampling methods, and quite a few more measures. List them in</li>
-</ul>
+<p>There are a few more resampling methods, and quite a few more measures. We list them in</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 mlr_resamplings</code></pre>
@@ -2127,6 +2291,7 @@ mlr_resamplings</code></pre>
 Keys: bootstrap, custom, cv, holdout, insample, repeated_cv,
   subsampling</code></pre>
 </div>
+<p>and</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 mlr_measures</code></pre>
@@ -2144,28 +2309,19 @@ Keys: classif.acc, classif.auc, classif.bacc, classif.bbrier,
   regr.rsq, regr.sae, regr.smape, regr.srho, regr.sse,
   selected_features, time_both, time_predict, time_train</code></pre>
 </div>
-<p>To get help on a resampling method, use <code>?mlr_resamplings_xxx</code>, for a measure do <code>?mlr_measures_xxx</code>. you can also use the <a href="https://mlr3.mlr-org.com/reference/index.html">mlr3 reference</a> online.</p>
-<p>Some measure, for example <code>"auc"</code>, require a “probability” prediction, instead of a response prediction, see <a href="#probability-prediction"><strong>Probability Prediction</strong></a>.</p>
-<h2 id="performance-comparison-and-benchmarks">Performance Comparison and Benchmarks</h2>
-<ul>
-<li>We could compare <code>Learners</code> by evaluating <code>resample()</code> for each of them manually.</li>
-<li><code>benchmark()</code> automatically performs resampling evaluations for multiple learners and tasks.</li>
-<li>Create fully crossed designs using <code>benchmark_grid()</code>: multiple <code>Learner</code>s <strong>x</strong> multiple <code>Task</code>s <strong>x</strong> multiple <code>Resampling</code>s.</li>
-</ul>
+<p>To get help on a resampling method, use <code>?mlr_resamplings_xxx</code>, for a measure do <code>?mlr_measures_xxx</code>. You can also use the <a href="https://mlr3.mlr-org.com/reference/index.html">mlr3 reference</a> online.</p>
+<p>Some measure, for example <code>"auc"</code>, require a “probability” prediction, instead of a response prediction.</p>
+<h3 id="performance-comparison-and-benchmarks">Performance Comparison and Benchmarks</h3>
+We could compare <code>Learners</code> by evaluating <code>resample()</code> for each of them manually. However, <code>benchmark()</code> automatically performs resampling evaluations for multiple learners and tasks. <code>benchmark_grid()</code> creates fully crossed designs: Multiple <code>Learner</code>s for multiple <code>Task</code>s are compared w.r.t. multiple <code>Resampling</code>s.
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 lrn_list = list(
   lrn(&quot;classif.log_reg&quot;, predict_type = &quot;prob&quot;),
   lrn(&quot;classif.ranger&quot;, predict_type = &quot;prob&quot;)
 )
-
 bm_design = benchmark_grid(task = task, resamplings = rsmp(&quot;cv&quot;, folds = 10), learners = lrn_list)</code></pre>
 </div>
-<ul>
-<li>Careful, large benchmarks may take a long time! This one should take less than a minute, however.</li>
-<li>In General, we want use <em>parallelization</em> to speed things up on multicore machines.</li>
-<li>This does <strong>not work</strong> on rstudio cloud, so only uncomment it locally!</li>
-</ul>
+<p>At this point, we want to mention that large benchmarks will (naturally) be very time-consuming and computionally expensvie. Our use case is very simple, so expect it to take about one minute. In general, we want use <em>parallelization</em> to speed things up on multicore machines. A benchmark is an ‘embarassingly parallel’ task, so in this case it would be very easy. This does <strong>not work</strong> on rstudio cloud, though. So only uncomment it locally!</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 # future::plan(&quot;multiprocess&quot;)</code></pre>
@@ -2174,9 +2330,7 @@ bm_design = benchmark_grid(task = task, resamplings = rsmp(&quot;cv&quot;, folds
 <pre class="r"><code>
 bmr = benchmark(bm_design)</code></pre>
 </div>
-<ul>
-<li>We can compare different measures. We compare misclassification rate and AUC.</li>
-</ul>
+<p>In the benchmark we can compare different measures. We compare misclassification rate and AUC.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 msr_list = list(msr(&quot;classif.ce&quot;), msr(&quot;classif.auc&quot;))
@@ -2184,21 +2338,102 @@ performances = bmr$aggregate(msr_list)
 performances[, c(&quot;learner_id&quot;, &quot;classif.ce&quot;, &quot;classif.auc&quot;)]</code></pre>
 <pre><code>
         learner_id classif.ce classif.auc
-1: classif.log_reg      0.252   0.7764657
-2:  classif.ranger      0.232   0.7939573</code></pre>
+1: classif.log_reg      0.252   0.7884098
+2:  classif.ranger      0.231   0.8008735</code></pre>
 </div>
+<p>In contrast to before, we see that the two models perform very similarly. The perfect class assignment from before was obviously a very optimistic evalution.</p>
+<h2 id="deviating-from-package-defaults">Deviating from package defaults</h2>
+<p>The previously shown techniques build the backbone of an <a href="https://mlr3.mlr-org.com">mlr3</a>-featured machine learning work bench. However, in most cases one would never proceed in the way we did. While many <code>R</code> packages have carefully selected default settings, they will not perform optimally in any scenario. Typically, we can select the values of hyperparameters. These (hyper)parameters can be accessed via</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+learner_logreg$param_set$get_values()</code></pre>
+<pre><code>
+named list()</code></pre>
+</div>
+<p>or</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+learner_logreg$param_set</code></pre>
+<pre><code>
+ParamSet: 
+             id    class lower upper      levels     default value
+ 1: singular.ok ParamLgl    NA    NA  TRUE,FALSE        TRUE      
+ 2:           x ParamLgl    NA    NA  TRUE,FALSE       FALSE      
+ 3:           y ParamLgl    NA    NA  TRUE,FALSE        TRUE      
+ 4:       model ParamLgl    NA    NA  TRUE,FALSE        TRUE      
+ 5:    etastart ParamUty    NA    NA             &lt;NoDefault&gt;      
+ 6:     mustart ParamUty    NA    NA             &lt;NoDefault&gt;      
+ 7:       start ParamUty    NA    NA                              
+ 8:      offset ParamUty    NA    NA             &lt;NoDefault&gt;      
+ 9:     epsilon ParamDbl  -Inf   Inf                   1e-08      
+10:       maxit ParamDbl  -Inf   Inf                      25      
+11:       trace ParamLgl    NA    NA  TRUE,FALSE       FALSE      
+12:      se.fit ParamLgl    NA    NA  TRUE,FALSE       FALSE      
+13:  dispersion ParamUty    NA    NA                              </code></pre>
+</div>
+<p>As of now, the parameter set is empty.</p>
+<p>We can parametrise our learners in two distinct manners. If we have prior knowledge on how the learner should be (hyper-)parametrised, the way to go would be manually entering the parameters in the parameter set. In most cases, however, we would want to tune the model so that it can search good model configurations itself. For now however we only want to compare a small number of models.</p>
+<p>To get an idea on which parameters can be manipulated, we can investigate the parameters of the original package version.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+?ranger::ranger</code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+expression1 = floor(sqrt(ncol(german_credit) - 1))</code></pre>
+</div>
+<p>For the random forest two meaninful parameters which steer model complexity are: <code>num.trees</code> and <code>mtry</code></p>
+<p><code>num.trees</code> defaults to <code>500</code> and <code>mtry</code> to <code>floor(sqrt(ncol(data) - 1))</code>, in our case 4.</p>
+<p>In the following we aim to train three different learners:</p>
+<ol type="1">
+<li><p>The default random forest.</p></li>
+<li><p>A random forest with low <code>num.trees</code> and low <code>mtry</code>.</p></li>
+<li><p>A random forest with high <code>num.trees</code> and high <code>mtry</code>.</p></li>
+</ol>
+<p>We will benchmark their performance on the German credit data set.</p>
+<p>We construct the three learners and set the parameters with a named list.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+learner_rf_medium = lrn(&quot;classif.ranger&quot;, predict_type = &quot;prob&quot;)
+
+learner_rf_low = lrn(&quot;classif.ranger&quot;, predict_type = &quot;prob&quot;)
+learner_rf_low$param_set$values &lt;- list(num.trees = 5, mtry = 2)
+
+learner_rf_high = lrn(&quot;classif.ranger&quot;, predict_type = &quot;prob&quot;)
+learner_rf_high$param_set$values &lt;- list(num.trees = 1000, mtry = 11)</code></pre>
+</div>
+<p>Once the learners are defined, we can benchmark them.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+lrn_list = list(
+  learner_rf_low = learner_rf_low,
+  learner_rf_medium = learner_rf_medium,
+  learner_rf_high = learner_rf_high
+)
+bm_design = benchmark_grid(task = task, resamplings = rsmp(&quot;cv&quot;, folds = 10), learners = lrn_list)</code></pre>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+bmr = benchmark(bm_design)</code></pre>
+</div>
+<p>We compare misclassification rate and AUC again.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+msr_list = list(msr(&quot;classif.ce&quot;), msr(&quot;classif.auc&quot;))
+performances = bmr$aggregate(msr_list)
+cbind(learner = names(lrn_list), performances[, c(&quot;classif.ce&quot;, &quot;classif.auc&quot;)])</code></pre>
+<pre><code>
+             learner classif.ce classif.auc
+1:    learner_rf_low      0.274   0.7137971
+2: learner_rf_medium      0.228   0.8027832
+3:   learner_rf_high      0.233   0.7984704</code></pre>
+</div>
+<p>All learners seem to have similar performance while the <code>learner_rf_low</code> seems to underfit a bit.</p>
 <h2 id="outlook">Outlook</h2>
-<ul>
-<li>How did we do? We can check the <a href="https://www.openml.org/t/31">OpenML</a> website for performances of other machine learning methods.
-<ul>
-<li>We see <code>ranger</code> is among the top methods</li>
-</ul></li>
-<li>Things we have not done that should be considered:
-<ul>
-<li>We have worked with default hyperparameters, but we may want to see if tuning them helps (Day 2)</li>
-<li>Some preprocessing and feature extraction steps may sometimes be helpful (Day 3)</li>
-</ul></li>
-</ul>
+<p>This tutorial was very detailed on the default workflow within <a href="https://mlr3.mlr-org.com">mlr3</a>. Having followed this tutorial you should be able to run your first models yourself. Next to that we spiked into performance evaluation and benchmarking. Furthermore, we showed how to customise learners.</p>
+<p>The next parts of the tutorial will go more into depth into additional <code>mlr3</code> topics.</p>
+<p><a href="/basics_pipelines_german_credit/">Part II - Pipelines</a> introduces you into the <a href="https://mlr3pipelines.mlr-org.com">mlr3pipelines</a> package. You will learn you to build complete machine learning workflows including, e.g. data preprocessing.</p>
+<p><a href="/basics_tuning_german_credit/">Part III - Tuning</a> introduces you into the <a href="https://mlr3tuning.mlr-org.com">mlr3tuning</a> package. You will learn how to find parametrisations of your model that perform better than others.</p>
 <h2 id="appendix">Appendix</h2>
 <h3 id="r-pro-tips">R Pro Tips</h3>
 <ul>
@@ -2423,15 +2658,6 @@ class(pred_rf)</code></pre>
 <div class="d-appendix">
 </div>
 
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-</script>
 
 <!--radix_placeholder_site_after_body-->
 <!--/radix_placeholder_site_after_body-->

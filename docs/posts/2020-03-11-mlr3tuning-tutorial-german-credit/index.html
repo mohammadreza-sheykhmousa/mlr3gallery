@@ -1282,7 +1282,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <!--/radix_placeholder_distill-->
-  <script src="../../site_libs/header-attrs-2.1/header-attrs.js"></script>
   <script src="../../site_libs/jquery-1.11.3/jquery.min.js"></script>
   <script src="../../site_libs/bowser-1.9.3/bowser.min.js"></script>
   <script src="../../site_libs/webcomponents-2.0.0/webcomponents.js"></script>
@@ -1617,7 +1616,6 @@ large_searchspace = ParamSet$new(list(
   ParamFct$new(&quot;kernel&quot;, c(&quot;rectangular&quot;, &quot;gaussian&quot;, &quot;rank&quot;, &quot;optimal&quot;)),
   ParamLgl$new(&quot;scale&quot;)
 ))
-
 large_searchspace$trafo = function(x, param_set) {
   x$k = round(exp(x$k))
   x
@@ -1634,7 +1632,6 @@ large_searchspace$trafo = function(x, param_set) {
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 tuner_random = tnr(&quot;random_search&quot;, batch_size = 36)
-
 instance_random = TuningInstance$new(
   task = task,
   learner = knn,
@@ -1947,7 +1944,6 @@ ParamInt$new(&quot;parameter_id&quot;, lower = 0, upper = 10)
 ## - numeric (from &#39;lower&#39; to &#39;upper&#39; bound)
 ## - unfortunately named after the storage type, &quot;double precision floating point&quot;
 ParamDbl$new(&quot;parameter_id&quot;, lower = 0, upper = 10)
-
 ## Also possible: &quot;untyped&quot;, but we can not tune with this!
 ParamUty$new(&quot;parameter_id&quot;)</code></pre>
 </div>
