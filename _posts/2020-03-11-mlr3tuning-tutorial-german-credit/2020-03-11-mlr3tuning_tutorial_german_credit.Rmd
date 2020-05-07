@@ -198,7 +198,6 @@ large_searchspace = ParamSet$new(list(
   ParamFct$new("kernel", c("rectangular", "gaussian", "rank", "optimal")),
   ParamLgl$new("scale")
 ))
-
 large_searchspace$trafo = function(x, param_set) {
   x$k = round(exp(x$k))
   x
@@ -212,7 +211,6 @@ large_searchspace$trafo = function(x, param_set) {
 
 ```{r}
 tuner_random = tnr("random_search", batch_size = 36)
-
 instance_random = TuningInstance$new(
   task = task,
   learner = knn,
@@ -372,7 +370,6 @@ ParamInt$new("parameter_id", lower = 0, upper = 10)
 ## - numeric (from 'lower' to 'upper' bound)
 ## - unfortunately named after the storage type, "double precision floating point"
 ParamDbl$new("parameter_id", lower = 0, upper = 10)
-
 ## Also possible: "untyped", but we can not tune with this!
 ParamUty$new("parameter_id")
 ```
