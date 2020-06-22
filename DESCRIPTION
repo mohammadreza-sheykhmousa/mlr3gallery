@@ -55,8 +55,12 @@ Imports:
     visNetwork,
     visNetwork,
     xgboost,
-    xgboost
-Remotes: 
+    xgboost,
+    jsonlite,
+    data.table,
+    plumber,
+    httr
+Remotes:
     mlr-org/bbotk,
     mlr-org/mlr3book,
     mlr3learners/mlr3learners.randomforest

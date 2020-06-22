@@ -33,7 +33,7 @@ library(mlr3)
 library(mlr3pipelines)
 ```
 
-Lets create a toy pipeline that we want to use to predict the `Species` of the well known `r ref("mlr_tasks_iris", "iris")` `r ref("Task", "Task")`:
+Let's create a toy pipeline that we want to use to predict the `Species` of the well known `r ref("mlr_tasks_iris", "iris")` `r ref("Task", "Task")`:
 
 ```{r}
 task = tsk("iris")
