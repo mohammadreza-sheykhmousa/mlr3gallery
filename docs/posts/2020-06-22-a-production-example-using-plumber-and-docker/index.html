@@ -59,7 +59,7 @@
 <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["a-production-example-using-plumber-and-docker_files/bowser-1.9.3/bowser.min.js","a-production-example-using-plumber-and-docker_files/distill-2.2.21/template.v2.js","a-production-example-using-plumber-and-docker_files/header-attrs-2.2/header-attrs.js","a-production-example-using-plumber-and-docker_files/jquery-1.11.3/jquery.min.js","a-production-example-using-plumber-and-docker_files/webcomponents-2.0.0/webcomponents.js","mlr3_api/Dockerfile","mlr3_api/feature_info.rds","mlr3_api/fix_feature_types.R","mlr3_api/gl.rds","mlr3_api/predict_gl.R","mlr3_api/train_gl.R"]}
+  {"type":"character","attributes":{},"value":["mlr3_api/Dockerfile","mlr3_api/feature_info.rds","mlr3_api/fix_feature_types.R","mlr3_api/gl.rds","mlr3_api/predict_gl.R","mlr3_api/train_gl.R"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
 
@@ -1284,7 +1284,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <!--/radix_placeholder_distill-->
-  <script src="../../site_libs/header-attrs-2.2/header-attrs.js"></script>
   <script src="../../site_libs/jquery-1.11.3/jquery.min.js"></script>
   <script src="../../site_libs/bowser-1.9.3/bowser.min.js"></script>
   <script src="../../site_libs/webcomponents-2.0.0/webcomponents.js"></script>
@@ -1301,7 +1300,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"A production example using plumber and Docker","description":"We write a REST API using plumber and deploy it using Docker.","authors":[{"author":"Lennart Schneider","authorURL":"#","affiliation":"&nbsp;","affiliationURL":"#"}],"publishedDate":"2020-06-22T00:00:00.000+02:00","citationText":"Schneider, 2020"}
+{"title":"A production example using plumber and Docker","description":"We write a REST API using plumber and deploy it using Docker.","authors":[{"author":"Lennart Schneider","authorURL":"#","affiliation":"&nbsp;","affiliationURL":"#"}],"publishedDate":"2020-06-22T00:00:00.000+00:00","citationText":"Schneider, 2020"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -1545,6 +1544,7 @@ resp = httr::POST(url = &quot;http://127.0.0.1:1030/predict_medv&quot;,
   body = newdata, encode = &quot;json&quot;)
 httr::content(resp)</code></pre>
 </div>
+<p>Note that you can also use <code>jsonlite::toJSON</code> to convert a <code>data.frame</code> to JSON data for your toy examples here.</p>
 <p>In the following final section we want to use <code>Docker</code> to run a virtual machine as a container (an instance of a snapshot of a machine at a moment in time).</p>
 <h3 id="using-docker-to-deploy-our-rest-api">Using Docker to Deploy our REST API</h3>
 <p>A <a href="https://www.docker.com/"><code>Docker</code></a> container image is a lightweight, standalone, executable package of software that includes everything needed to run an application. Suppose we want to run our REST API on an Amazon Web Service or Microsoft’s Azure cloud. Then we can use a <code>Docker</code> container to easily set up our web service without going through the hassle of configuring manually our hosting instance.</p>
