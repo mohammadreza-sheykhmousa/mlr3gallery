@@ -59,7 +59,7 @@
 <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"NULL"}
+  {"type":"character","attributes":{},"value":["a-production-example-using-plumber-and-docker_files/bowser-1.9.3/bowser.min.js","a-production-example-using-plumber-and-docker_files/distill-2.2.21/template.v2.js","a-production-example-using-plumber-and-docker_files/header-attrs-2.2/header-attrs.js","a-production-example-using-plumber-and-docker_files/jquery-1.11.3/jquery.min.js","a-production-example-using-plumber-and-docker_files/webcomponents-2.0.0/webcomponents.js","mlr3_api/Dockerfile","mlr3_api/feature_info.rds","mlr3_api/fix_feature_types.R","mlr3_api/gl.rds","mlr3_api/predict_gl.R","mlr3_api/train_gl.R"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
 
@@ -1284,6 +1284,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <!--/radix_placeholder_distill-->
+  <script src="../../site_libs/header-attrs-2.2/header-attrs.js"></script>
   <script src="../../site_libs/jquery-1.11.3/jquery.min.js"></script>
   <script src="../../site_libs/bowser-1.9.3/bowser.min.js"></script>
   <script src="../../site_libs/webcomponents-2.0.0/webcomponents.js"></script>
@@ -1300,7 +1301,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"A production example using plumber and Docker","description":"We write a REST API using plumber and deploy it using Docker.","authors":[{"author":"Lennart Schneider","authorURL":"#","affiliation":"&nbsp;","affiliationURL":"#"}],"publishedDate":"2020-06-22T00:00:00.000+00:00","citationText":"Schneider, 2020"}
+{"title":"A production example using plumber and Docker","description":"We write a REST API using plumber and deploy it using Docker.","authors":[{"author":"Lennart Schneider","authorURL":"#","affiliation":"&nbsp;","affiliationURL":"#"}],"publishedDate":"2020-06-22T00:00:00.000+02:00","citationText":"Schneider, 2020"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -1337,7 +1338,13 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 
 <div class="d-article">
-<p>FIXME: Some fancy intro words… Give credit to some docs and blog posts where it is due.</p>
+<p>Production with R has come a long way. In this tutorial, we give a brief example on how to write a REST API and deploy it (relying on the <code>mlr3</code> ecosystem for the actual training and predicting). Most of this tutorial was inspired by other excellent posts and vignettes:</p>
+<ul>
+<li><a href="https://medium.com/tmobile-tech/using-docker-to-deploy-an-r-plumber-api-863ccf91516d">R can API and So Can You!</a></li>
+<li><a href="https://medium.com/tmobile-tech/using-docker-to-deploy-an-r-plumber-api-863ccf91516d">Using docker to deploy an R plumber API</a></li>
+<li><code>vignette("vig01_plumber_deploy", package = "AzureContainers")</code></li>
+</ul>
+<p>All files presented in this tutorial are available <a href="https://github.com/mlr-org/mlr3gallery/_posts/2020-06-22-a-production-example-using-plumber-and-docker/mlr3_api">here</a>.</p>
 <h3 id="modeling-background">Modeling Background</h3>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
@@ -1345,15 +1352,24 @@ library(data.table)
 library(mlr3)
 library(mlr3pipelines)</code></pre>
 </div>
-<p>Let’s create a toy pipeline that we want to use to predict the <code>Species</code> of the well known <a href="https://mlr3.mlr-org.com/reference/mlr_tasks_iris.html"><code>iris</code></a> <a href="https://mlr3.mlr-org.com/reference/Task.html"><code>Task</code></a>:</p>
+<p>We will use a subset of the <a href="https://mlr3.mlr-org.com/reference/mlr_tasks_boston_housing.html"><code>boston_housing</code></a> <a href="https://mlr3.mlr-org.com/reference/Task.html"><code>Task</code></a>. Our goal is to predict the median value of owner-occupied homes in USD 1000’s (target <code>medv</code>), using the features <code>crim</code>, <code>tax</code> and <code>town</code> (just to have <code>factor</code>, <code>integer</code>, and <code>numeric</code> feature types):</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
-task = tsk(&quot;iris&quot;)</code></pre>
+data = tsk(&quot;boston_housing&quot;)$data()
+data = data[, c(&quot;medv&quot;, &quot;crim&quot;, &quot;tax&quot;, &quot;town&quot;)]</code></pre>
 </div>
-<p>Regarding modeling, we will keep it very simple and use the <a href="https://mlr3.mlr-org.com/reference/mlr_learners_classif.rpart.html"><code>rpart learner</code></a>. Missing numerical features will be imputed by their median via <a href="https://mlr3pipelines.mlr-org.com/reference/mlr_pipeops_imputemedian.html"><code>PipeOpImputeMedian</code></a>.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
-g = po(&quot;imputemedian&quot;) %&gt;&gt;% lrn(&quot;classif.rpart&quot;)</code></pre>
+task = TaskRegr$new(&quot;boston&quot;, backend = data, target = &quot;medv&quot;)</code></pre>
+</div>
+<p>Let’s create a toy pipeline:</p>
+<p>Regarding modeling, we will keep it very simple and use the <a href="https://mlr3.mlr-org.com/reference/mlr_learners_regr.rpart.html"><code>rpart learner</code></a>. Missing numerical features (which could happen during prediction) will be imputed by their median via <a href="https://mlr3pipelines.mlr-org.com/reference/mlr_pipeops_imputemedian.html"><code>PipeOpImputeMedian</code></a>, while missing factorial features will be imputed using a new level via <a href="https://mlr3pipelines.mlr-org.com/reference/mlr_pipeops_imputenewlvl.html"><code>PipeOpImputeNewlvl</code></a>. As <code>PipeOpImputeNewlvl</code> will introduce a new <code>level</code>, <code>".MISSING"</code> to impute missing values, we also use <a href="https://mlr3pipelines.mlr-org.com/reference/mlr_pipeops_fixfactors.html"><code>PipeOpFixFactors</code></a>:</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+g = po(&quot;imputemedian&quot;) %&gt;&gt;%
+  po(&quot;imputenewlvl&quot;) %&gt;&gt;%
+  po(&quot;fixfactors&quot;) %&gt;&gt;%
+  lrn(&quot;regr.rpart&quot;)</code></pre>
 </div>
 <p>We wrap this <a href="https://mlr3pipelines.mlr-org.com/reference/Graph.html"><code>Graph</code></a> in a <a href="https://mlr3pipelines.mlr-org.com/reference/mlr_learners_graph.html"><code>GraphLearner</code></a> and can train on the <code>Task</code>:</p>
 <div class="layout-chunk" data-layout="l-body">
@@ -1371,6 +1387,16 @@ gl$model</code></pre>
 <pre class="r"><code>
 saveRDS(gl, &quot;gl.rds&quot;)</code></pre>
 </div>
+<p>We will also store some information regarding the features, i.e., the feature names, types and levels (you will later see, why we need to do this):</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+feature_info = list(
+  feature_names = task$feature_names,
+  feature_types = task$feature_types,
+  levels = task$levels()
+)
+saveRDS(feature_info, &quot;feature_info.rds&quot;)</code></pre>
+</div>
 <p>Putting everything in a file, <code>train_gl.R</code> looks like the following, which we can then source before moving on:</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
@@ -1379,37 +1405,71 @@ saveRDS(gl, &quot;gl.rds&quot;)</code></pre>
 library(mlr3)
 library(mlr3pipelines)
 
-task = tsk(&quot;iris&quot;)
+data = tsk(&quot;boston_housing&quot;)$data()
+data = data[, c(&quot;medv&quot;, &quot;crim&quot;, &quot;tax&quot;, &quot;town&quot;)]
+task = TaskRegr$new(&quot;boston&quot;, backend = data, target = &quot;medv&quot;)
 
-g = po(&quot;imputemedian&quot;) %&gt;&gt;% lrn(&quot;classif.rpart&quot;)
+g = po(&quot;imputemedian&quot;) %&gt;&gt;%
+  po(&quot;imputenewlvl&quot;) %&gt;&gt;%
+  po(&quot;fixfactors&quot;) %&gt;&gt;%
+  lrn(&quot;regr.rpart&quot;)
 
 gl = GraphLearner$new(g)
 
 gl$train(task)
 
-saveRDS(gl, &quot;gl.rds&quot;)</code></pre>
+saveRDS(gl, &quot;gl.rds&quot;)
+
+feature_info = list(
+  feature_names = task$feature_names,
+  feature_types = task$feature_types,
+  levels = task$levels()
+)
+
+saveRDS(feature_info, &quot;feature_info.rds&quot;)</code></pre>
 </div>
-<p>Our goal of our REST (representational state transfer) API (application programming interface) will be to predict the <code>Species</code> of a new observation, i.e., it should do something like the following:</p>
+<p>Our goal of our REST (representational state transfer) API (application programming interface) will be to predict the <code>medv</code> of a new observation, i.e., it should do something like the following:</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
-newdata = data.table(Petal.Length = NA, Petal.Width = 3.14,
-  Sepal.Length = 6.96, Sepal.Width = 0.12)
+newdata = data.table(crim = 3.14, tax = 691, town = &quot;Newton&quot;)
 gl$predict_newdata(newdata)</code></pre>
 <pre><code>
-&lt;PredictionClassif&gt; for 1 observations:
- row_id truth  response
-      1  &lt;NA&gt; virginica</code></pre>
+&lt;PredictionRegr&gt; for 1 observations:
+ row_id truth response
+      1    NA 32.23288</code></pre>
 </div>
 <p>However, in our REST API, the <code>newdata</code> will be received at an endpoint that accepts a particular input. In the next section we will use <code>plumber</code> to set up our web service.</p>
 <h3 id="using-plumber-to-set-up-our-rest-api">Using plumber to set up our REST API</h3>
 <p>The package <a href="https://cran.r-project.org/package=plumber">plumber</a> allows us to create a REST API by simply commenting existing R code. <code>plumber</code> makes use of these comments to define the web service. Running <code>plumber::plumb</code> on the commented R file then results in a runnable web service that other systems can interact with over a network.</p>
-<p>As an endpoint for predicting the <code>Species</code>, we will use a <code>POST</code> request. This will allow us to enclose data in the body of the request message. More precisely, we assume that the data will be provided in the JSON format.</p>
+<p>As an endpoint for predicting the <code>medv</code>, we will use a <code>POST</code> request. This will allow us to enclose data in the body of the request message. More precisely, we assume that the data will be provided in the JSON format.</p>
 <p>When a <code>POST</code> request containing the data (in JSON format) is received our code must then:</p>
 <ol type="1">
-<li><p>convert the input (in JSON format) to a <code>data.table</code> with all four feature columns (<code>Petal.Length</code>, <code>Petal.Width</code>, <code>Sepal.Length</code>, <code>Sepal.Width</code>) being numeric</p></li>
-<li><p>predict the <code>Species</code> based on the input using our trained pipeline and provide an output that can be understood by the client</p></li>
+<li><p>convert the input (in JSON format) to a <code>data.table</code> with all feature columns matching their feature type</p></li>
+<li><p>predict the <code>medv</code> based on the input using our trained pipeline and provide an output that can be understood by the client</p></li>
 </ol>
-<p>The following R file, <code>predict_gl.R</code> loads our trained pipepline and provides an endpoint for a <code>POST</code> request, <code>"/predict_species"</code>. The incoming data then is converted using <code>jsonlite::fromJSON</code>. We expect the incoming data to either be JSON objects in an array or nested JSON objects and therefore we bind the converted vectors row-wise to a <code>data.table</code> using <code>data.table::rbindlist</code>. We then convert all columns to numeric values and can finally predict the <code>Species</code> using our trained pipeline. As no default serialization from <code>R6</code> objects to JSON objects exists (yet), we wrap the <a href="https://mlr3.mlr-org.com/reference/Prediction.html"><code>Prediction</code></a> in a <code>data.table</code>:</p>
+<p>To make sure that all features match their feature type, we will later use the following function stored in the R file <code>fix_feature_types.R</code>:</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+# fix_feature_types.R
+
+fix_feature_types = function(feature, feature_name, feature_info) {
+  id = match(feature_name, feature_info$feature_names)
+  feature_type = feature_info$feature_types$type[id]
+  switch(feature_type,
+    &quot;logical&quot;   = as.logical(feature),
+    &quot;integer&quot;   = as.integer(feature),
+    &quot;numeric&quot;   = as.numeric(feature),
+    &quot;character&quot; = as.character(feature),
+    &quot;factor&quot;    = factor(feature, levels = feature_info$levels[[feature_name]],
+      ordered = FALSE),
+    &quot;ordered&quot;   = factor(feature, levels = feature_info$levels[[feature_name]],
+      ordered = TRUE),
+    &quot;POSIXct&quot;   = as.POSIXct(feature)
+  )
+}</code></pre>
+</div>
+<p><code>fix_feature_types()</code> can later be applied to the <code>newdata</code>, and will make sure, that all incoming features are converted to their expected feature type as in the original <code>Task</code> we used for training our pipeline (and this is the reason, why we stored the information about the features earlier). Note that in our tutorial we only have <code>factor</code>, <code>integer</code>, and <code>numeric</code> features, but <code>fix_feature_types()</code> should also work for all other supported <code>feature_types</code> listed in logical, integer, numeric, character, factor, ordered, POSIXct. However, it may need some customization depending on your own production environment to make the conversions meaningful.</p>
+<p>The following R file, <code>predict_gl.R</code> loads our trained pipepline and feature information and provides an endpoint for a <code>POST</code> request, <code>"/predict_medv"</code>. The incoming data then is converted using <code>jsonlite::fromJSON</code>. We expect the incoming data to either be JSON objects in an array or nested JSON objects and therefore we bind the converted vectors row-wise to a <code>data.table</code> using <code>data.table::rbindlist</code>. We then convert all features to their expected <code>feature_types</code> (using the <code>fix_feature_types()</code> function as defined above) and can finally predict the <code>medv</code> using our trained pipeline. As no default serialization from <code>R6</code> objects to JSON objects exists (yet), we wrap the <a href="https://mlr3.mlr-org.com/reference/Prediction.html"><code>Prediction</code></a> in a <code>data.table</code> (of course we could also only return the numeric prediction values):</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
 # predict_gl.R
@@ -1417,26 +1477,35 @@ gl$predict_newdata(newdata)</code></pre>
 library(data.table)
 library(jsonlite)
 library(mlr3)
+library(mlr3misc)  # needed for pmap()
 library(mlr3pipelines)
+
+source(&quot;fix_feature_types.R&quot;)
 
 gl = readRDS(&quot;gl.rds&quot;)
 
-#* @post /predict_species
+feature_info = readRDS(&quot;feature_info.rds&quot;)
+
+#* @post /predict_medv
 function(req) {
   # get the JSON string from the post body
   newdata = fromJSON(req$postBody, simplifyVector = FALSE)
   # expect either JSON objects in an array or nested JSON objects
-  newdata = rbindlist(newdata)
-  # convert all columns to numeric
-  newdata = newdata[, lapply(.SD, FUN = as.numeric)]
+  newdata = rbindlist(newdata, use.names = TRUE)
+  # convert all features in place to their expected feature_type
+  newdata[, colnames(newdata) := pmap(list(.SD, colnames(newdata)),
+    fix_feature_types,
+    feature_info = feature_info)]
   # predict and return as a data.table
   as.data.table(gl$predict_newdata(newdata))
+  # or only the numeric value
+  # gl$predict_newdata(newdata)$response
 }</code></pre>
 </div>
 <p>Note that the only difference to a regular R file is the comment</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
-#* @post /predict_species`</code></pre>
+#* @post /predict_medv`</code></pre>
 </div>
 <p>telling <code>plumber</code> to construct the endpoint <code>"/predict_species"</code> for a <code>POST</code> request.</p>
 <p>We can then run <code>plumber::plumb</code>. The following code sets up the web service locally on your personal machine at port 1030 (we use such a high number because some systems require administrator rights to allow processes to listen to lower ports):</p>
@@ -1447,25 +1516,32 @@ r = plumb(&quot;predict_gl.R&quot;)
 r$run(port = 1030, host = &quot;0.0.0.0&quot;)</code></pre>
 </div>
 <p>Congratulations, your first REST API is running on your local machine. We can test it by providing some data, using <code>curl</code> via the command line:</p>
-<pre><code>
-curl --data &#39;[{&quot;Petal.Length&quot;:1.34, &quot;Petal.Width&quot;:2, &quot;Sepal.Length&quot;:6.1, &quot;Sepal.Width&quot;: 4.31}]&#39; &quot;http://127.0.0.1:1030/predict_species&quot;</code></pre>
-<p>This should return the predicted <code>Species</code>:</p>
-<pre><code>
-[{&quot;row_id&quot;:1,&quot;response&quot;:&quot;setosa&quot;}]</code></pre>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="bash"><code>
+curl --data &#39;[{&quot;crim&quot;:3.14, &quot;tax&quot;:691, &quot;town&quot;:&quot;Newton&quot;}]&#39; &quot;http://127.0.0.1:1030/predict_medv&quot;</code></pre>
+</div>
+<p>This should return the predicted <code>medv</code>:</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="bash"><code>
+[{&quot;row_id&quot;:1,&quot;response&quot;:&quot;32.2329&quot;}]</code></pre>
+</div>
 <p>Alternatively, we can also use the <code>httr::POST</code> function within R:</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
-newdata = &#39;[{&quot;Petal.Length&quot;:1.34, &quot;Petal.Width&quot;:2, &quot;Sepal.Length&quot;:6.1, &quot;Sepal.Width&quot;:4.31}]&#39;
-resp = httr::POST(url = &quot;http://127.0.0.1:1030/predict_species&quot;,
+newdata = &#39;[{&quot;crim&quot;:3.14, &quot;tax&quot;:691, &quot;town&quot;:&quot;Newton&quot;}]&#39;
+resp = httr::POST(url = &quot;http://127.0.0.1:1030/predict_medv&quot;,
   body = newdata, encode = &quot;json&quot;)
 httr::content(resp)</code></pre>
 </div>
-<p>We can further play around a bit more and provide more than a single new observation and also check whether our missing value imputation works:</p>
+<p>We can further play around a bit more and provide more than a single new observation and also check whether our feature type conversion and missing value imputation works:</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre class="r"><code>
-newdata = &#39;[{&quot;Petal.Length&quot;:&quot;abc&quot;, &quot;Petal.Width&quot;:3.14, &quot;Sepal.Length&quot;:6.96, &quot;Sepal.Width&quot;:0.12},
-  {&quot;Petal.Length&quot;:3.41, &quot;Petal.Width&quot;:&quot;def&quot;, &quot;Sepal.Length&quot;:&quot;ghi&quot;, &quot;Sepal.Width&quot;:7.3}]&#39;
-resp = httr::POST(url = &quot;http://127.0.0.1:1030/predict_species&quot;,
+newdata = &#39;[
+  {&quot;crim&quot;:3.14, &quot;tax&quot;:691, &quot;town&quot;:&quot;Newton&quot;},
+  {&quot;crim&quot;:&quot;not_a_number&quot;, &quot;tax&quot;:3.14, &quot;town&quot;:&quot;Munich&quot;},
+  {&quot;tax&quot;:&quot;not_a_number&quot;, &quot;town&quot;:31, &quot;crim&quot;:99}
+]&#39;
+resp = httr::POST(url = &quot;http://127.0.0.1:1030/predict_medv&quot;,
   body = newdata, encode = &quot;json&quot;)
 httr::content(resp)</code></pre>
 </div>
@@ -1474,50 +1550,68 @@ httr::content(resp)</code></pre>
 <p>A <a href="https://www.docker.com/"><code>Docker</code></a> container image is a lightweight, standalone, executable package of software that includes everything needed to run an application. Suppose we want to run our REST API on an Amazon Web Service or Microsoft’s Azure cloud. Then we can use a <code>Docker</code> container to easily set up our web service without going through the hassle of configuring manually our hosting instance.</p>
 <p>We are going to need two things: An image and a container. An image defines the OS and software while the container is the actual running instance of the image. To build a <code>Docker</code> image we have to specify a <code>Dockerfile</code>. Note that it is sensible to set up the whole project in its own directory, e.g., <code>~/mlr3_api</code>.</p>
 <p>Every <code>Dockerfile</code> starts with a <code>FROM</code> statement describing the image we are building our image from. In our case we want an R based image that ideally already has <code>plumber</code> and its dependencies installed. Luckily, the <code>trestletech/plumber</code> image exists:</p>
-<pre><code>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="bash"><code>
 FROM trestletech/plumber</code></pre>
+</div>
 <p>We then install the R packages needed to set up our REST API (note that we can skip <code>jsonlite</code>, because <code>plumber</code> already depends on it):</p>
-<pre><code>
-RUN R -e &#39;install.packages(c(&quot;data.table&quot;, &quot;mlr3&quot;, &quot;mlr3pipelines&quot;))&#39;</code></pre>
-<p>Next, we copy our trained pipeline (<code>gl.rds</code>) and our R file to predict (<code>predict_gl.R</code>) to a new directory <code>/data</code> and set this as the working directory:</p>
-<pre><code>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="bash"><code>
+RUN R -e &#39;install.packages(c(&quot;data.table&quot;, &quot;mlr3&quot;, &quot;mlr3misc&quot;, &quot;mlr3pipelines&quot;))&#39;</code></pre>
+</div>
+<p>Next, we copy our trained pipeline (<code>gl.rds</code>), our stored feature information (<code>feature_info.rds</code>), our R file to convert features, (<code>fix_feature_types.R</code>) and our R file to predict (<code>predict_gl.R</code>) to a new directory <code>/data</code> and set this as the working directory:</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="bash"><code>
 RUN mkdir /data
 COPY gl.rds /data
+COPY feature_info.rds /data
+COPY fix_feature_types.R /data
 COPY predict_gl.R /data
 WORKDIR /data</code></pre>
+</div>
 <p>Finally, we listen on port 1030 and start the server (this is analogously done as manually calling <code>plumber::plumb</code> on the <code>predict_gl.R</code> file and running it):</p>
-<pre><code>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="bash"><code>
 EXPOSE 1030
 ENTRYPOINT [&quot;R&quot;, &quot;-e&quot;, \
     &quot;r = plumber::plumb(&#39;/data/predict_gl.R&#39;); r$run(port = 1030, host = &#39;0.0.0.0&#39;)&quot;]</code></pre>
+</div>
 <p>The complete <code>Dockerfile</code> looks like the following:</p>
-<pre><code>
-# Dockerfile
-
+<div class="layout-chunk" data-layout="l-body">
+<pre class="bash"><code>
 FROM trestletech/plumber
 
-RUN R -e &#39;install.packages(c(&quot;data.table&quot;, &quot;mlr3&quot;, &quot;mlr3pipelines&quot;))&#39;
+RUN R -e &#39;install.packages(c(&quot;data.table&quot;, &quot;mlr3&quot;, &quot;mlr3misc&quot;, &quot;mlr3pipelines&quot;))&#39;
 
 RUN mkdir /data
 COPY gl.rds /data
+COPY feature_info.rds /data
+COPY fix_feature_types.R /data
 COPY predict_gl.R /data
 WORKDIR /data
 
 EXPOSE 1030
 ENTRYPOINT [&quot;R&quot;, &quot;-e&quot;, \
     &quot;r = plumber::plumb(&#39;/data/predict_gl.R&#39;); r$run(port = 1030, host = &#39;0.0.0.0&#39;)&quot;]</code></pre>
+</div>
 <p>To build the image we open a terminal in the <code>mlr3_api</code> directory and run:</p>
-<pre><code>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="bash"><code>
 docker build -t mlr3-plumber-demo .</code></pre>
+</div>
 <p>This may take quite some time.</p>
 <p>To finally run the container, simply use:</p>
-<pre><code>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="bash"><code>
 docker run --rm -p 1030:1030 mlr3-plumber-demo</code></pre>
+</div>
 <p>You can then proceed to provide some data via <code>curl</code> or <code>httr::POST</code> (to the same local address, because the <code>Docker</code> container is still running on your local machine).</p>
 <p>To stop all running containers use:</p>
-<pre><code>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="bash"><code>
 docker stop $(docker ps -a -q)</code></pre>
-<p>Finally, you can proceed to deploy your container to an Amazon Web Service or an Azure Cloud. For the latter, the package <a href="https://cran.r-project.org/package=AzureContainers">AzureContainers</a> is especially helpful. If you do plan to do this note that the <code>plumber</code> service aboe is exposed over HTTP, and there is no authentication layer making it insecure. You may think about adding a layer of authentification and restricting the service to HTTPS.</p>
+</div>
+<p>Finally, you can proceed to deploy your container to an Amazon Web Service or an Azure Cloud. For the latter, the package <a href="https://cran.r-project.org/package=AzureContainers">AzureContainers</a> is especially helpful. If you do plan to do this note that the <code>plumber</code> service above is exposed over HTTP, and there is no authentication layer making it insecure. You may think about adding a layer of authentification and restricting the service to HTTPS.</p>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
