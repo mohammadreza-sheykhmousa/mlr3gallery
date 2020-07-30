@@ -13,7 +13,7 @@ License: `use_mit_license()`, `use_gpl3_license()` or friends to
 URL: https://github.com/mlr-org/mlr3gallery
 Imports:
     anytime,
-    bbotk (>= 0.1.1),
+    bbotk (>= 0.2.0),
     blogdown,
     caret,
     DataExplorer,
@@ -41,7 +41,7 @@ Imports:
     mlr3misc,
     mlr3pipelines,
     mlr3proba,
-    mlr3tuning,
+    mlr3tuning (>= 0.2.0),
     mlr3viz,
     OpenML,
     paradox,
@@ -55,11 +55,13 @@ Imports:
     visNetwork,
     visNetwork,
     xgboost,
-    xgboost
+    xgboost,
+    mlr3fselect
 Remotes: 
     mlr-org/bbotk,
     mlr-org/mlr3book,
     mlr3learners/mlr3learners.randomforest
+    mlr-org/mlr3fselect
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)

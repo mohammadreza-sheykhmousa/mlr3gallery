@@ -25,7 +25,7 @@ library(mlr3book)
 library(mlr3)
 library(mlr3tuning)
 lgr::get_logger("mlr3")$set_threshold("warn")
-lgr::get_logger("mlr3tuning")$set_threshold("warn")
+lgr::get_logger("bbotk")$set_threshold("warn")
 ```
 
 The use-case illustrated below touches on the following concepts:
@@ -326,8 +326,8 @@ ps = ParamSet$new(
 ))
 
 # Define the Terminator
-terminator = term("evals", n_evals = 10)
-at = AutoTuner$new(lrn_xgb, rsmp("holdout"), measures = msr("regr.mse"), ps,
+terminator = trm("evals", n_evals = 10)
+at = AutoTuner$new(lrn_xgb, rsmp("holdout"), measure = msr("regr.mse"), ps,
   terminator, tuner = tnr("random_search"))
 ```
 
@@ -344,7 +344,7 @@ sprintf("RMSE of the tuned xgboost: %s", round(sqrt(res$aggregate()), 2))
 We can obtain the resulting params in the respective splits by accessing the `r ref("ResampleResult")`.
 
 ```{r, eval = eval_tune}
-sapply(res$learners, function(x) x$param_set$values)[-2,]
+sapply(res$learners, function(x) x$tuning_instance$result_x_search_space)
 ```
 
 **NOTE:** To keep runtime low, we only tune parts of the hyperparameter space of `r cran_pkg("xgboost")` in this example.
