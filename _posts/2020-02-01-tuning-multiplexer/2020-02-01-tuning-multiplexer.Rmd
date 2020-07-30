@@ -52,7 +52,7 @@ library(mlr3pipelines)
 library(mlr3learners)
 library(paradox)
 lgr::get_logger("mlr3")$set_threshold("warn")
-lgr::get_logger("mlr3tuning")$set_threshold("warn")
+lgr::get_logger("bbotk")$set_threshold("warn")
 
 learns = list(
   lrn("classif.xgboost", id = "xgb"),
@@ -121,17 +121,17 @@ glrn = GraphLearner$new(pipe, id = "g") # connect pipe to mlr3
 ps = ParamSet$new(list(
   ParamFct$new("branch.selection", levels = c("rf", "xgb"))
 ))
-instance = TuningInstance$new(
+instance = TuningInstanceSingleCrit$new(
   task = task,
   learner = glrn,
   resampling = cv1,
-  measures = msr("classif.ce"),
-  param_set = ps,
-  terminator = term("none")
+  measure = msr("classif.ce"),
+  search_space = ps,
+  terminator = trm("none")
 )
 tuner = tnr("grid_search")
-tuner$tune(instance)
-instance$archive(unnest = "tune_x")
+tuner$optimize(instance)
+instance$archive$data()
 instance$result
 ```
 
@@ -141,16 +141,16 @@ But: Via this approach we can now get unbiased performance results via nested re
 at = AutoTuner$new(
   learner = glrn,
   resampling = cv1,
-  measures = msr("classif.ce"),
-  tune_ps = ps,
-  terminator = term("none"),
+  measure = msr("classif.ce"),
+  search_space  = ps,
+  terminator = trm("none"),
   tuner = tuner
 )
 rr = resample(task, at, cv2, store_models = TRUE)
 # access 1st inner tuning result
 ll = rr$data$learner[[1]]
 ll$tuning_result
-ll$archive(unnest = "tune_x")
+ll$archive$data()
 ```
 
 ## Model-Selection and Tuning with Pipelines
@@ -195,24 +195,24 @@ Very similar code as before, we just swap out the search space.
 And now use random search.
 
 ```{r}
-instance = TuningInstance$new(
+instance = TuningInstanceSingleCrit$new(
   task = task,
   learner = glrn,
   resampling = cv1,
-  measures = msr("classif.ce"),
-  param_set = ps,
-  terminator = term("evals", n_evals = 10)
+  measure = msr("classif.ce"),
+  search_space = ps,
+  terminator = trm("evals", n_evals = 10)
 )
 tuner = tnr("random_search")
-tuner$tune(instance)
-instance$archive(unnest = "tune_x")
+tuner$optimize(instance)
+instance$archive$data()
 instance$result
 ```
 
 The following shows a quick way to visualize the tuning results.
 
 ```{r}
-resdf = instance$archive(unnest = "tune_x")
+resdf = instance$archive$data()
 resdf = reshape(resdf,
   varying = c("xgb.nrounds","rf.mtry"),
   v.name = "param_value",
@@ -232,16 +232,16 @@ Nested resampling, now really needed:
 at = AutoTuner$new(
   learner = glrn,
   resampling = cv1,
-  measures = msr("classif.ce"),
-  tune_ps = ps,
-  terminator = term("evals", n_evals = 10),
+  measure = msr("classif.ce"),
+  search_space = ps,
+  terminator = trm("evals", n_evals = 10),
   tuner = tuner
 )
 rr = resample(task, at, cv2, store_models = TRUE)
 # access 1st inner tuning result
 ll = rr$data$learner[[1]]
 ll$tuning_result
-ll$archive(unnest = "tune_x")
+ll$archive$data()
 ```
 
 
